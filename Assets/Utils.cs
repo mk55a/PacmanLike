@@ -29,6 +29,26 @@ namespace EmptyCharacter.Utils
 
             return textMesh; 
         }
+
+        public static Vector2 GetMouseWorldPosition()
+        {
+            Vector3 vec = GetMouseWorldPositionWithZ(Input.mousePosition, Camera.main);
+            vec.z = 0f;
+            return vec; 
+        }
+        public static Vector2 GetMouseWorldPositionWithZ()
+        {
+            return GetMouseWorldPositionWithZ(Input.mousePosition, Camera.main);
+        }
+        public static Vector2 GetMouseWorldPositionWithZ(Camera worldCamera)
+        {
+            return GetMouseWorldPositionWithZ(Input.mousePosition, worldCamera);
+        }
+        public static Vector2 GetMouseWorldPositionWithZ(Vector2 screenPosition, Camera worldCamera)
+        {
+            Vector2 worldPosition = worldCamera.ScreenToWorldPoint(screenPosition);
+            return worldPosition;
+        }
     }
 }
 

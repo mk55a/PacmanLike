@@ -9,6 +9,6 @@ public class Testing : MonoBehaviour
     private void Start()
     {
         Grid grid = new Grid(width, height, gridCellSize);
-        Debug.Log(";");
+       
     }
 }

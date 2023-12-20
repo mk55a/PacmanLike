@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace EmptyCharacter.Utils
 {
@@ -29,7 +30,40 @@ namespace EmptyCharacter.Utils
 
             return textMesh; 
         }
+        private static Transform cachedCanvasTransform; 
+        public static Transform GetCanvasTransform()
+        {
+            if(cachedCanvasTransform == null)
+            {
+                Canvas canvas = MonoBehaviour.FindAnyObjectByType<Canvas>();
+                if (canvas != null)
+                {
+                    cachedCanvasTransform = canvas.transform;   
 
+                }
+            }
+            return cachedCanvasTransform;
+        }
+
+        public static GameObject CreateWorldSprite(string name, Sprite sprite, Vector2 position, Vector2 localScale, int sortingOrder, Color color)
+        {
+            return CreateWorldSprite(null, name, sprite, position, localScale, sortingOrder, color);
+        }
+
+        public static GameObject CreateWorldSprite(Transform parent, string name, Sprite sprite, Vector2 localPosition, Vector2 localScale, int sortingOrder, Color color)
+        {
+            GameObject gameObject = new GameObject("BlueGrid",typeof(SpriteRenderer));
+            Transform transform = gameObject.transform; 
+            transform.SetParent(parent,false);
+            transform.localPosition = localPosition;
+            transform.localScale = localScale; 
+            SpriteRenderer spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+            spriteRenderer.sprite = sprite; 
+            spriteRenderer.sortingOrder = sortingOrder;
+            spriteRenderer.color = color;
+            return gameObject;
+
+        }
         public static Vector2 GetMouseWorldPosition()
         {
             Vector3 vec = GetMouseWorldPositionWithZ(Input.mousePosition, Camera.main);

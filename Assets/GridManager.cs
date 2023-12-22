@@ -27,20 +27,6 @@ public class GridManager : MonoBehaviour
        
     }
 
-    private void Update()
-    {
-        //Instead of taking the position of the mouse we later take the postion of the player character. 
-        if (Input.GetMouseButtonDown(0))
-        {
-            //grid.SetValue(Utils.GetMouseWorldPosition(),10 );
-        }
-        if(Input.GetMouseButtonDown(1))
-        {
-            grid.OccupyGrid(Utils.GetMouseWorldPosition(), sprite);
-            //Debug.Log(grid.GetValue(Utils.GetMouseWorldPosition()));
-        }
-    }
-
     public void PlayerOccupyGrid(int x, int y)
     {
         grid.PlayerOccupyGrid(x, y, sprite);

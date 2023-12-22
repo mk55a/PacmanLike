@@ -17,10 +17,15 @@ public class Player : MonoBehaviour
     private Vector2 _input;
     private SpriteDirection _spriteDirection;
 
-    private int previousGridX, previousGridY; 
+    private int previousGridX, previousGridY;
+    private float _movementSpeed;
+    private RaycastHit2D hit; 
+
+    public ContactFilter2D movementFilter; 
+    private List<RaycastHit2D> castCollisions = new List<RaycastHit2D>();
+    public float collisionOffset = 0.05f;
     private void Update()
     {
-        //_input =
     }
     private void Awake()
     {
@@ -31,6 +36,7 @@ public class Player : MonoBehaviour
         {
             Debug.LogError("RB is null! ");
         }
+        _movementSpeed = _speed;
         
 
     }
@@ -64,25 +70,40 @@ public class Player : MonoBehaviour
             _spriteDirection = SpriteDirection.Up;
         }
         UpdatePlayerSprite();
-        _rigidBody.velocity = _input * _speed;
+        HandlePlayerMovement(_input);
+        _rigidBody.velocity = _input * _movementSpeed;
         GetGridXY(_player.transform.position);
     }
+    public void HandlePlayerMovement(Vector2 direction)
+    {
+        hit = Physics2D.Raycast(transform.position, transform.right, 1.5f, LayerMask.GetMask("Boundary"));
+        Debug.DrawRay(transform.position, transform.right*1.5f, Color.red);
+       // Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 4f, Color.red);
 
+        if (hit.collider!=null )
+        {
+            _movementSpeed = 0;
+        }
+        else
+        {
+            _movementSpeed = _speed;
+        }
+    }
     private void UpdatePlayerSprite()
     {
         switch( _spriteDirection )
         {
             case SpriteDirection.Left:
-                _spriteTransform.rotation = Quaternion.Euler(0f, 0f, 180f);
+                _player.transform.rotation = Quaternion.Euler(0f, 0f, 180f);
                 break;
             case SpriteDirection.Right:
-                _spriteTransform.rotation = Quaternion.Euler(0f, 0f, 0f);
+                _player.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
                 break;
             case SpriteDirection.Up:
-                _spriteTransform.rotation = Quaternion.Euler(0f, 0f, 90f);
+                _player.transform.rotation = Quaternion.Euler(0f, 0f, 90f);
                 break;
             case SpriteDirection.Down:
-                _spriteTransform.rotation = Quaternion.Euler(0f, 0f, -90f);
+                _player.transform.rotation = Quaternion.Euler(0f, 0f, -90f);
                 break;
                 default:
                 return;

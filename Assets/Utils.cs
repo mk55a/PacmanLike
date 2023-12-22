@@ -56,6 +56,7 @@ namespace EmptyCharacter.Utils
             Transform transform = gameObject.transform; 
             transform.SetParent(parent,false);
             transform.localPosition = localPosition;
+            
             transform.localScale = localScale; 
             SpriteRenderer spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
             spriteRenderer.sprite = sprite; 
@@ -63,6 +64,29 @@ namespace EmptyCharacter.Utils
             spriteRenderer.color = color;
             return gameObject;
 
+        }
+        public static GameObject CreateWorldBoundaries(string name, Sprite sprite, Vector2 position, Vector2 localScale, int sortingOrder, Color color)
+        {
+            return CreateWorldBoundaries(null, name, sprite , position, localScale, sortingOrder, color);
+        }
+        public static GameObject CreateWorldBoundaries(Transform parent, string name, Sprite sprite, Vector2 localPosition, Vector2 localScale, int sortingOrder, Color color)
+        {
+            GameObject gameObject = new GameObject("Boundary", typeof(SpriteRenderer));
+            Transform transform = gameObject.transform;
+            transform.SetParent(parent, false);
+            transform.localPosition = localPosition;
+            transform.localScale = localScale;
+            SpriteRenderer spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+            spriteRenderer.sprite = sprite;
+            gameObject.tag = "Wall";
+            spriteRenderer.sortingOrder = sortingOrder;
+            spriteRenderer.color = color;
+            gameObject.layer = LayerMask.NameToLayer("Boundary");
+            gameObject.AddComponent<Rigidbody2D>();
+            gameObject.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
+            gameObject.AddComponent<BoxCollider2D>();
+            gameObject.GetComponent<BoxCollider2D>().size = new Vector2(1.3f, 1.3f);
+            return gameObject;
         }
         public static Vector2 GetMouseWorldPosition()
         {

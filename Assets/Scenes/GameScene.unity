@@ -431,25 +431,13 @@ MonoBehaviour:
   originObject: {fileID: 51515048}
   _speed: 4
   _rotationSpeed: 0
-  _layerMask:
-    serializedVersion: 2
-    m_Bits: 0
   _rigidBody: {fileID: 1738587330}
-  movementFilter:
-    useTriggers: 0
-    useLayerMask: 0
-    useDepth: 0
-    useOutsideDepth: 0
-    useNormalAngle: 0
-    useOutsideNormalAngle: 0
-    layerMask:
-      serializedVersion: 2
-      m_Bits: 0
-    minDepth: 0
-    maxDepth: 0
-    minNormalAngle: 0
-    maxNormalAngle: 0
-  collisionOffset: 0.05
+  restrictionLayerMask:
+    serializedVersion: 2
+    m_Bits: 8
+  interactionLayerMasks:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!50 &1738587330
 Rigidbody2D:
   serializedVersion: 4

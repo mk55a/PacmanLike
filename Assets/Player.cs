@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -10,23 +11,26 @@ public class Player : MonoBehaviour
     [SerializeField] private Transform originObject;
     [SerializeField]private float _speed;
     [SerializeField] private float _rotationSpeed; 
-    [SerializeField]private LayerMask _layerMask;
+    
     [SerializeField] private Rigidbody2D _rigidBody;
 
     private PlayerControls _controls; 
     private Vector2 _input;
     private SpriteDirection _spriteDirection;
 
-    private int previousGridX, previousGridY;
-    private float _movementSpeed;
-    private RaycastHit2D hit; 
 
-    public ContactFilter2D movementFilter; 
-    private List<RaycastHit2D> castCollisions = new List<RaycastHit2D>();
-    public float collisionOffset = 0.05f;
-    private void Update()
-    {
-    }
+    private float _movementSpeed;
+    private RaycastHit2D hit;
+    private RaycastHit2D objectRaycast;
+
+    [SerializeField] private LayerMask restrictionLayerMask;
+    [SerializeField]
+    private LayerMask interactionLayerMasks;
+
+
+
+    private int previousGridX, previousGridY;
+    
     private void Awake()
     {
         _controls = new PlayerControls();
@@ -38,6 +42,7 @@ public class Player : MonoBehaviour
         }
         _movementSpeed = _speed;
         
+          
 
     }
 
@@ -70,15 +75,14 @@ public class Player : MonoBehaviour
             _spriteDirection = SpriteDirection.Up;
         }
         UpdatePlayerSprite();
-        HandlePlayerMovement(_input);
+        HandlePlayerMovement();
         _rigidBody.velocity = _input * _movementSpeed;
-        GetGridXY(_player.transform.position);
+        HandlePlayerCollisions(_player.transform.position);
     }
-    public void HandlePlayerMovement(Vector2 direction)
+    public void HandlePlayerMovement()
     {
         hit = Physics2D.Raycast(transform.position, transform.right, 1.5f, LayerMask.GetMask("Boundary"));
         Debug.DrawRay(transform.position, transform.right*1.5f, Color.red);
-       // Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 4f, Color.red);
 
         if (hit.collider!=null )
         {
@@ -89,6 +93,37 @@ public class Player : MonoBehaviour
             _movementSpeed = _speed;
         }
     }
+
+    private void HandlePlayerCollisions(Vector2 position)
+    {
+        objectRaycast = Physics2D.Raycast(transform.position, transform.right, 3f, interactionLayerMasks);
+        Debug.DrawRay(transform.position, transform.right * 3f, Color.green);
+        Debug.Log(objectRaycast.collider.gameObject.name);  
+        //string collidedLayerName = LayerMask. //LayerMask.LayerToName(objectRaycast.collider.gameObject.layer);
+        /*Interactables collidedInteractable = (Interactables)Enum.Parse(typeof(Interactables), collidedLayerName);
+        switch (collidedInteractable)
+        {
+            case Interactables.BlueGrid:
+
+                GridManager.Instance.CalculateCapturedGrid();
+                
+                break;
+            case Interactables.Grid:
+                GridManager.Instance.pathCoordinates.Clear();
+                GetGridXY(position);
+                break;
+
+            case Interactables.Enemy:
+
+                break;
+            case Interactables.PowerUp:
+                
+                break;
+
+        }*/
+
+    }
+    
     private void UpdatePlayerSprite()
     {
         switch( _spriteDirection )
@@ -126,6 +161,7 @@ public class Player : MonoBehaviour
     }
     private void CaptureGrid()
     {
+        
         GridManager.Instance.PlayerOccupyGrid(previousGridX, previousGridY);    
     }
 
@@ -139,6 +175,17 @@ public class Player : MonoBehaviour
         Vector2 worldPosition = worldCamera.ScreenToWorldPoint(player.transform.position);
         return worldPosition;
     }
+}
+public enum PowerUps
+{
+     
+}
+public enum Interactables
+{
+    Enemy,
+    BlueGrid,
+    Grid,
+    PowerUp
 }
 public enum SpriteDirection
 {

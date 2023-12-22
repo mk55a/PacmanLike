@@ -56,15 +56,28 @@ namespace EmptyCharacter.Utils
             Transform transform = gameObject.transform; 
             transform.SetParent(parent,false);
             transform.localPosition = localPosition;
-            
             transform.localScale = localScale; 
             SpriteRenderer spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
             spriteRenderer.sprite = sprite; 
             spriteRenderer.sortingOrder = sortingOrder;
             spriteRenderer.color = color;
+            gameObject.layer = LayerMask.NameToLayer("BlueGrid");
             return gameObject;
 
         }
+        public static GameObject CreateGridColliders(string name, Vector2 position, Vector2 localScale)
+        {
+            GameObject gameObject = new GameObject("Grid", typeof(SpriteRenderer));
+            Transform transform = gameObject.transform;
+            transform.localPosition = position;
+            transform.localScale = localScale;
+            SpriteRenderer spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+            gameObject.layer = LayerMask.NameToLayer("Grid");
+            gameObject.AddComponent<BoxCollider2D>();
+            gameObject.GetComponent<BoxCollider2D>().size = new Vector2(1.3f, 1.3f);
+            return gameObject;
+        }
+        
         public static GameObject CreateWorldBoundaries(string name, Sprite sprite, Vector2 position, Vector2 localScale, int sortingOrder, Color color)
         {
             return CreateWorldBoundaries(null, name, sprite , position, localScale, sortingOrder, color);

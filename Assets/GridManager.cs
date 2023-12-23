@@ -45,7 +45,10 @@ public class GridManager : MonoBehaviour
             Debug.LogWarning(coord.X+","+coord.Y);
         }
     }
-
+    public void CheckAround(int x, int y)
+    {
+        grid.CheckArounGrid(x,y);
+    }
     public void CalculateCapturedGrid()
     {
         Debug.Log("Calculating Area");
@@ -83,6 +86,8 @@ public class GridManager : MonoBehaviour
         //Once the area is captured, clear path coordinates list.
         //pathCoordinates.Clear();
     }
+
+    
     public void PlayerOccupyGrid(int x, int y)
     {
         grid.PlayerOccupyGrid(x, y, sprite);

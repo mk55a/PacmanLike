@@ -136,5 +136,40 @@ public class Grid
         GetXY(worldPosition, out x, out y);
         return GetValue(x, y);
     }
+    public void CheckArounGrid(int x, int y)
+    {
+        for(int i=x; i < width; i++)
+        {
+            if (allGridArray[i, y] == null)
+            {
+                // blue grid is found on the right of the current grid, maybe 5 grids away, maybe 15 or even the next grid itself
+                Debug.LogWarning("Going Right");
+            }
+
+        }
+        for(int i = 0; i < x; i++)
+        {
+            if (allGridArray[i, y] == null)
+            {
+                //blue grid is found on left side
+                Debug.LogWarning("Going Left");
+            }
+            
+        }
+        for(int i=0; i< y; i++)
+        {
+            if (allGridArray[x, i] == null)
+            {
+                Debug.LogWarning("Going Down");
+            }
+        }
+        for(int i =y; i<height; i++)
+        {
+            if (allGridArray[x, i] == null)
+            {
+                Debug.LogWarning("Going Up");
+            }
+        }
+    }
     
 }

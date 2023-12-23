@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
+
 public class Player : MonoBehaviour
 {
     [SerializeField] private GameObject _player;
@@ -94,7 +96,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void HandlePlayerCollisions(Vector2 position)
+    private void HandlePlayerCollisions(Vector3 position)
     {
         objectRaycast = Physics2D.Raycast(transform.position, transform.right, 1.5f, interactionLayerMasks);
         Debug.DrawRay(transform.position, transform.right * 1.5f, Color.green);
@@ -106,8 +108,11 @@ public class Player : MonoBehaviour
             case Interactables.BlueGrid:
 
                 Debug.Log("<color=blue>BLUE</color> ");
-                GridManager.Instance.CalculateCapturedGrid();
-
+                //GridManager.Instance.CalculateCapturedGrid();
+                int x, y;
+                x = Mathf.FloorToInt((position - GridManager.Instance.originObject.transform.position).x / GridManager.Instance.gridCellSize);
+                y = Mathf.FloorToInt((position - GridManager.Instance.originObject.transform.position).y / GridManager.Instance.gridCellSize);
+                GridManager.Instance.CheckAround(x,y);
                 break;
             case Interactables.Grid:
 

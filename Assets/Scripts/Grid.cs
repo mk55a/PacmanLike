@@ -11,7 +11,7 @@ public class Grid
     private TextMesh[,] debugTextArray;
     private GameObject[,] blueGridArray;
     private GameObject[,] boundaryGridArray;
-    private GameObject[,] allGridArray;
+    public GameObject[,] allGridArray;
     public Grid(int width, int height, float cellSize, Vector2 originPosition)
     {
         this.width = width;
@@ -98,7 +98,7 @@ public class Grid
         
         return new Vector2(x, y) * cellSize + originPosition;
     }
-    private void GetXY(Vector2 worldPosition, out int x, out int y)
+    public void GetXY(Vector2 worldPosition, out int x, out int y)
     {
         x = Mathf.FloorToInt((worldPosition-originPosition).x / cellSize);
         y= Mathf.FloorToInt((worldPosition-originPosition).y / cellSize);
@@ -136,4 +136,5 @@ public class Grid
         GetXY(worldPosition, out x, out y);
         return GetValue(x, y);
     }
+    
 }

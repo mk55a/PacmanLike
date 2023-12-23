@@ -96,31 +96,33 @@ public class Player : MonoBehaviour
 
     private void HandlePlayerCollisions(Vector2 position)
     {
-        objectRaycast = Physics2D.Raycast(transform.position, transform.right, 3f, interactionLayerMasks);
-        Debug.DrawRay(transform.position, transform.right * 3f, Color.green);
-        Debug.Log(objectRaycast.collider.gameObject.name);  
-        //string collidedLayerName = LayerMask. //LayerMask.LayerToName(objectRaycast.collider.gameObject.layer);
-        /*Interactables collidedInteractable = (Interactables)Enum.Parse(typeof(Interactables), collidedLayerName);
+        objectRaycast = Physics2D.Raycast(transform.position, transform.right, 1.5f, interactionLayerMasks);
+        Debug.DrawRay(transform.position, transform.right * 1.5f, Color.green);
+        //Debug.Log("<color=yellow>"+objectRaycast.collider.name+"</color>");
+        string collidedLayerName = LayerMask.LayerToName(objectRaycast.collider.gameObject.layer); //LayerMask.LayerToName(objectRaycast.collider.gameObject.layer);
+        Interactables collidedInteractable = (Interactables)Enum.Parse(typeof(Interactables), collidedLayerName);
         switch (collidedInteractable)
         {
             case Interactables.BlueGrid:
 
+                Debug.Log("<color=blue>BLUE</color> ");
                 GridManager.Instance.CalculateCapturedGrid();
-                
+
                 break;
             case Interactables.Grid:
-                GridManager.Instance.pathCoordinates.Clear();
+
+                //Debug.Log("GRID");
                 GetGridXY(position);
                 break;
 
             case Interactables.Enemy:
-
+                Debug.Log("<color=red>ENEMY</color>");
                 break;
             case Interactables.PowerUp:
                 
                 break;
 
-        }*/
+        }
 
     }
     

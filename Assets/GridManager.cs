@@ -48,19 +48,51 @@ public class GridManager : MonoBehaviour
 
     public void CalculateCapturedGrid()
     {
+        Debug.Log("Calculating Area");
+        int startingX, startingY, endingX, endingY;
+        Vector2 startingVector = new Vector2(0,0);
+        Vector2 endingVector = new Vector2(0,0);
+        Debug.Log("Count : " + pathCoordinates.Count);
+        for(int i=0; i< pathCoordinates.Count; i++)
+        {
+            if (i == 0)
+            {
+                startingX = pathCoordinates[i].X;   
+                startingY = pathCoordinates[i].Y;  
+                startingVector.x = pathCoordinates[i].X;    
+                startingVector.y = pathCoordinates[i].Y;
 
+            }
+            if (i == pathCoordinates.Count - 1)
+            {
+                endingVector.y = pathCoordinates[i].Y;  
+                endingVector.x = pathCoordinates[i].X;
+                endingX = pathCoordinates[i].X; 
+                endingY = pathCoordinates[i].Y;
+            }
+            Debug.Log(startingVector + ","+endingVector);
+
+            /*float t =0.05f;
+
+            Vector2 interpolatedPoint = Vector2.Lerp(Vector2.Lerp(startingVector, new Vector2(pathCoordinates[i].X, pathCoordinates[i].Y), t), Vector2.Lerp(new Vector2(pathCoordinates[i].X, pathCoordinates[i].Y), endingVector, t),t);
+            int x, y;
+            grid.GetXY(interpolatedPoint, out x,out y);
+            PlayerOccupyGrid(x, y);*/
+
+        }
         //Once the area is captured, clear path coordinates list.
-        pathCoordinates.Clear();
+        //pathCoordinates.Clear();
     }
     public void PlayerOccupyGrid(int x, int y)
     {
         grid.PlayerOccupyGrid(x, y, sprite);
+        Destroy(grid.allGridArray[x, y]);
         pathCoordinates.Add(new Coordinates(x, y));
         blueCoordinates.Add(new Coordinates(x, y));
-        foreach(Coordinates coord in blueCoordinates) { 
+        /*foreach(Coordinates coord in blueCoordinates) { 
             Debug.LogWarning(coord.X+","+coord.Y);
 
-        }
+        }*/
     }
 }
 

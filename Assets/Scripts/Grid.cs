@@ -9,8 +9,8 @@ public class Grid
     private Vector2 originPosition;
     private int[,] gridArray;
     private TextMesh[,] debugTextArray;
-    private GameObject[,] blueGridArray;
-    private GameObject[,] boundaryGridArray;
+    public GameObject[,] blueGridArray,pathGridArray;
+    public GameObject[,] boundaryGridArray;
     public GameObject[,] allGridArray;
     public Grid(int width, int height, float cellSize, Vector2 originPosition)
     {
@@ -20,8 +20,9 @@ public class Grid
         this.originPosition = originPosition;   
 
         gridArray = new int[width, height];
-        debugTextArray = new TextMesh[width, height];
+        //debugTextArray = new TextMesh[width, height];
         blueGridArray = new GameObject[width, height];
+        pathGridArray = new GameObject[width, height];
         boundaryGridArray = new GameObject[width, height];
         allGridArray = new GameObject[width, height];
         Debug.Log(width + ", " + height);
@@ -87,11 +88,16 @@ public class Grid
 
         blueGridArray[x, y] = Utils.CreateWorldSprite(gridArray[x, y].ToString(), sprite, GetWorldPosition(x,y) + new Vector2(cellSize, cellSize)*0.5f,new Vector2(1.6f,1.6f), 10, Color.white);
     }*/
-    public void PlayerOccupyGrid(int x, int y, Sprite sprite)
+    public void PlayerOccupyPathGrid(int x, int y, Sprite sprite)
     {
         
-        blueGridArray[x, y] = Utils.CreateWorldSprite(gridArray[x,y].ToString(), sprite, GetWorldPosition(x,y)+new Vector2(cellSize, cellSize)*0.5f, new Vector2(1.6f,1.6f), 10,Color.white);
-        
+        pathGridArray[x, y] =  Utils.CreatePathSprite(gridArray[x, y].ToString(), sprite, GetWorldPosition(x, y) + new Vector2(cellSize, cellSize) * 0.5f, new Vector2(1.6f, 1.6f), 10, Color.white); //Utils.CreateWorldSprite(gridArray[x,y].ToString(), sprite, GetWorldPosition(x,y)+new Vector2(cellSize, cellSize)*0.5f, new Vector2(1.6f,1.6f), 10,Color.white);
+
+    }
+    public void PlayerOccupyBlueGrid(int x, int y, Sprite sprite)
+    {
+        blueGridArray[x,y] = Utils.CreateWorldSprite(gridArray[x,y].ToString(), sprite, GetWorldPosition(x,y)+ new Vector2(cellSize,cellSize) *0.5f, new Vector2(1.6f,1.6f), 10, Color.white) ;
+
     }
     private Vector2 GetWorldPosition(int x, int y)
     {
@@ -136,40 +142,7 @@ public class Grid
         GetXY(worldPosition, out x, out y);
         return GetValue(x, y);
     }
-    public void CheckArounGrid(int x, int y)
-    {
-        for(int i=x; i < width; i++)
-        {
-            if (allGridArray[i, y] == null)
-            {
-                // blue grid is found on the right of the current grid, maybe 5 grids away, maybe 15 or even the next grid itself
-                Debug.LogWarning("Going Right");
-            }
+    
 
-        }
-        for(int i = 0; i < x; i++)
-        {
-            if (allGridArray[i, y] == null)
-            {
-                //blue grid is found on left side
-                Debug.LogWarning("Going Left");
-            }
-            
-        }
-        for(int i=0; i< y; i++)
-        {
-            if (allGridArray[x, i] == null)
-            {
-                Debug.LogWarning("Going Down");
-            }
-        }
-        for(int i =y; i<height; i++)
-        {
-            if (allGridArray[x, i] == null)
-            {
-                Debug.LogWarning("Going Up");
-            }
-        }
-    }
     
 }

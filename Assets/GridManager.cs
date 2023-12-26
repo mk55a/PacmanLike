@@ -45,9 +45,21 @@ public class GridManager : MonoBehaviour
             Debug.LogWarning(coord.X+","+coord.Y);
         }
     }
+    public void Connect()
+    {
+        //all path grid become blue grid. 
+        foreach(Coordinates pathCoord in pathCoordinates)
+        {
+            blueCoordinates.Add(pathCoord);
+            grid.PlayerOccupyBlueGrid(pathCoord.X, pathCoord.Y, sprite);
+            Destroy(grid.pathGridArray[pathCoord.X,pathCoord.Y]);
+        }
+
+        //sCheckAround(x, y);  
+    }
     public void CheckAround(int x, int y)
     {
-        grid.CheckArounGrid(x,y);
+       
     }
     public void CalculateCapturedGrid()
     {
@@ -88,12 +100,12 @@ public class GridManager : MonoBehaviour
     }
 
     
-    public void PlayerOccupyGrid(int x, int y)
+    public void PlayerOccupyPathGrid(int x, int y)
     {
-        grid.PlayerOccupyGrid(x, y, sprite);
+        grid.PlayerOccupyPathGrid(x, y, sprite);
         Destroy(grid.allGridArray[x, y]);
         pathCoordinates.Add(new Coordinates(x, y));
-        blueCoordinates.Add(new Coordinates(x, y));
+        
         /*foreach(Coordinates coord in blueCoordinates) { 
             Debug.LogWarning(coord.X+","+coord.Y);
 

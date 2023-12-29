@@ -32,6 +32,8 @@ public class Player : MonoBehaviour
 
 
     private int previousGridX, previousGridY;
+    private int noOfPathGrids=0;
+    private Vector2 pathStartGrid, pathEndGrid; 
     
     private void Awake()
     {
@@ -116,19 +118,16 @@ public class Player : MonoBehaviour
                     GridManager.Instance.Connect();
                     break;
                 case Interactables.BlueGrid:
-
+                    //GetGridXY(position);
+                    GetBlueGridXY(position);
                     Debug.Log("<color=blue>BLUE</color> ");
-                    //GridManager.Instance.CalculateCapturedGrid();
-                    /*int x, y;
-                    x = Mathf.FloorToInt((position - GridManager.Instance.originObject.transform.position).x / GridManager.Instance.gridCellSize);
-                    y = Mathf.FloorToInt((position - GridManager.Instance.originObject.transform.position).y / GridManager.Instance.gridCellSize);
-                    GridManager.Instance.Connect(x, y);
-                    GridManager.Instance.CheckAround(x, y);*/
+                    GridManager.Instance.Connect();
+                  
                     break;
                 case Interactables.Grid:
-
                     //Debug.Log("GRID");
                     GetGridXY(position);
+
                     break;
 
                 case Interactables.Enemy:
@@ -179,21 +178,58 @@ public class Player : MonoBehaviour
         y=Mathf.FloorToInt((postion-GridManager.Instance.originObject.transform.position).y/GridManager.Instance.gridCellSize);
         if (previousGridX != x || previousGridY != y)
         {
-            Debug.LogWarning("Generating a blue/path grid");
-            if (GridManager.Instance.grid.blueGridArray[previousGridX, previousGridY] != null || GridManager.Instance.grid.pathGridArray[previousGridX, previousGridY] != null || GridManager.Instance.grid.boundaryGridArray[previousGridX,previousGridY] !=null)
+            //Debug.LogWarning("Generating a blue/path grid");
+            if (GridManager.Instance.grid.blueGridArray[previousGridX, previousGridY] == null && GridManager.Instance.grid.pathGridArray[previousGridX, previousGridY] == null && GridManager.Instance.grid.boundaryGridArray[previousGridX,previousGridY] ==null)
             {
-                CaptureGridImmediate();
-            }
-            else
-            {
+                if (noOfPathGrids == 0)
+                {
+                    pathStartGrid = new Vector2(x, y);
+                }
+                noOfPathGrids += 1;
                 CaptureGrid();
             }
+            
             
         }
         previousGridX = x;
         previousGridY = y;  
         
         
+    }
+    private void GetBlueGridXY(Vector3 postion)
+    {
+        int x, y;
+        x = Mathf.FloorToInt((postion - GridManager.Instance.originObject.transform.position).x / GridManager.Instance.gridCellSize);
+        y = Mathf.FloorToInt((postion - GridManager.Instance.originObject.transform.position).y / GridManager.Instance.gridCellSize);
+        pathEndGrid = new Vector2(x, y);
+        Debug.Log("pathEnd : " + pathEndGrid + "  " + "pathStart : " + pathStartGrid);
+        Debug.Log("number of grids : " + noOfPathGrids);
+        if(previousGridX!=x || previousGridY != y)
+        {
+            if (GridManager.Instance.grid.pathGridArray[previousGridX, previousGridY] == null)
+            {
+                GetGridXY(postion); 
+            }
+            
+            if (GridManager.Instance.grid.blueGridArray[x, y] != null || GridManager.Instance.grid.pathGridArray[x, y] != null)
+            {
+                //Check lenght of the path grid to know what action should be done
+                if(noOfPathGrids>0)
+                {
+                    pathStartGrid = pathEndGrid;
+                    noOfPathGrids = 0;
+                }
+                
+               // GridManager.Instance.Connect();
+            }
+        }
+
+        
+
+    }
+    private void CalculateCapturedGrids()
+    {
+
     }
     private void CaptureGridImmediate()
     {

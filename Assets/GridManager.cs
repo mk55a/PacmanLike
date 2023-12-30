@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using EmptyCharacter.Utils;
+using System.Drawing;
 
 public class GridManager : MonoBehaviour
 {
@@ -74,14 +75,46 @@ public class GridManager : MonoBehaviour
     public void CalculateCapturedGrid()
     {
         int minX= int.MaxValue ,minY = int.MaxValue, maxX=int.MinValue, maxY=int.MinValue;
+        int startIndex=0;
+        foreach(Coordinates coord in pathCoordinates)
+        {
+            if(coord == Player.Instance.pathEndGrid)
+            {
+                
+                Debug.LogWarning("Ending on path grid");
+            }
+            else
+            {
+                //Debug.LogWarning(new Vector2(coord.X,coord.Y) + " ;  "+ new Vector2(Player.Instance.pathEndGrid.X, Player.Instance.pathEndGrid.Y)); 
+                //Debug.LogWarning(Player.Instance.pathEndGrid.X);
+            }
+        }
+        /*if (pathCoordinates.Contains(Player.Instance.pathEndGrid))
+        {
+            Debug.LogWarning("Ending on path grid");
+            //It is ending by enclosing onto the path
+            startIndex = pathCoordinates.IndexOf(Player.Instance.pathEndGrid);
+            Debug.LogWarning(startIndex + "  " + Player.Instance.pathEndGrid);
+
+            //Other sitatuation is it is connecting with boundary or a blue grid. 
+        }*/
         //Currently this is calculating all the coordinates. Instead get the startPath and reduce it from the list of path coordinates. So we get smaller blocks. Also it is crashing. 
-        foreach (Coordinates coord in pathCoordinates)
+
+        Debug.Log("start Index : " + startIndex);
+        for(int i = startIndex;  i < pathCoordinates.Count; i++)
+        {
+            minX = Mathf.Min(minX, pathCoordinates[i].X);
+            minY = Mathf.Min(minY, pathCoordinates[i].Y);
+            maxX = Mathf.Max(maxX, pathCoordinates[i].X);
+            maxY = Mathf.Max(maxY, pathCoordinates[i].Y);
+        }
+        /*foreach (Coordinates coord in pathCoordinates)
         {
             minX = Mathf.Min(minX, coord.X);
             minY= Mathf.Min(minY, coord.Y);
             maxX = Mathf.Max(maxX, coord.X);
             maxY = Mathf.Max(maxY, coord.Y);
-        }
+        }*/
 
         for(int x = minX; x <= maxX; x++)
         {
@@ -90,10 +123,10 @@ public class GridManager : MonoBehaviour
                 capturedCoordinates.Add(new Coordinates(x,y));
             }
         }
-        foreach(Coordinates coord in capturedCoordinates)
+        /*foreach(Coordinates coord in capturedCoordinates)
         {
             PlayerOccupyPathGrid(coord.X,coord.Y);
-        }
+        }*/
     }
 
     

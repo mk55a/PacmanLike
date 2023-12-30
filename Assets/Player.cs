@@ -8,6 +8,7 @@ using UnityEngine.UIElements;
 
 public class Player : MonoBehaviour
 {
+    public static Player Instance { get; private set; }
     [SerializeField] private GameObject _player;
     [SerializeField] private Transform _spriteTransform;
     [SerializeField] private Transform originObject;
@@ -33,10 +34,15 @@ public class Player : MonoBehaviour
 
     private int previousGridX, previousGridY;
     private int noOfPathGrids=0;
-    private Vector2 pathStartGrid, pathEndGrid; 
+    public Coordinates pathStartGrid, pathEndGrid; 
     
     private void Awake()
     {
+        if(Instance == null)
+        {
+            Instance = this;
+        }
+
         _controls = new PlayerControls();
 
         _rigidBody = GetComponent<Rigidbody2D>();   
@@ -183,7 +189,7 @@ public class Player : MonoBehaviour
             {
                 if (noOfPathGrids == 0)
                 {
-                    pathStartGrid = new Vector2(x, y);
+                    pathStartGrid = new Coordinates(previousGridX, previousGridY);//x,y
                 }
                 noOfPathGrids += 1;
                 CaptureGrid();
@@ -201,8 +207,15 @@ public class Player : MonoBehaviour
         int x, y;
         x = Mathf.FloorToInt((postion - GridManager.Instance.originObject.transform.position).x / GridManager.Instance.gridCellSize);
         y = Mathf.FloorToInt((postion - GridManager.Instance.originObject.transform.position).y / GridManager.Instance.gridCellSize);
-        pathEndGrid = new Vector2(x, y);
-        Debug.Log("pathEnd : " + pathEndGrid + "  " + "pathStart : " + pathStartGrid);
+        pathEndGrid = new Coordinates(x, y); //was x,y
+        /*foreach(Coordinates coord in GridManager.Instance.pathCoordinates)
+        {
+            if(new Coordinates(coord.X,coord.Y)== pathEndGrid)
+            {
+                Debug.LogWarning("Ending it with Path grid");
+            } 
+        }*/
+        Debug.Log("pathEnd : " + new Vector2(pathEndGrid.X, pathEndGrid.Y) + "  " + "pathStart : " + new Vector2(pathStartGrid.X, pathEndGrid.Y));
         Debug.Log("number of grids : " + noOfPathGrids);
         if(previousGridX!=x || previousGridY != y)
         {
@@ -216,28 +229,20 @@ public class Player : MonoBehaviour
                 //Check lenght of the path grid to know what action should be done
                 if(noOfPathGrids>0)
                 {
+                    Debug.Log("Resettiung path start grid");
                     pathStartGrid = pathEndGrid;
                     noOfPathGrids = 0;
                 }
                 
-               // GridManager.Instance.Connect();
+
             }
         }
 
         
 
     }
-    private void CalculateCapturedGrids()
-    {
-
-    }
-    private void CaptureGridImmediate()
-    {
-        //GridManager.Instance.PlayerOccupyPathGrid(previousGridX, previousGridY);
-    }
     private void CaptureGrid()
-    {
-        
+    {   
         GridManager.Instance.PlayerOccupyPathGrid(previousGridX, previousGridY);    
     }
 

@@ -37,8 +37,9 @@ public class GridManager : MonoBehaviour
     private void Start()
     {
         grid = new Grid(width, height, 2f, originObject.transform.position);
-        grid.SetBoundaries(sprite);
         DestroyGridForBoundaries();
+        grid.SetBoundaries(sprite);
+        
 
         allCoordinates = grid.AllGrids();
         //PrintAllCoordinates();
@@ -80,6 +81,7 @@ public class GridManager : MonoBehaviour
         int minX = int.MaxValue, minY = int.MaxValue, maxX = int.MinValue, maxY = int.MinValue;
         foreach (Coordinates coord in pathCoordinates)
         {
+            Debug.Log(coord.X + ";" + coord.Y);
             minX = Mathf.Min(minX, coord.X);
             minY = Mathf.Min(minY, coord.Y);
             maxX = Mathf.Max(maxX, coord.X);
@@ -87,14 +89,17 @@ public class GridManager : MonoBehaviour
         }
         int startPointX = (minX + maxX) / 2;
         int startPointY = (minY + maxY) / 2;
-        ConvertPathToBlue();
+        Debug.LogWarning(startPointX + ";;" + startPointY);
+        //ConvertPathToBlue();
+
         FloodFill.Instance.InitiateFlood(startPointX, startPointY);
 
     }
     public IEnumerator PlayerOccupyPathGrid(int x, int y)
     {
-        grid.PlayerOccupyPathGrid(x, y, sprite);
         Destroy(grid.allGridArray[x, y]);
+        grid.PlayerOccupyPathGrid(x, y, sprite);
+        
         pathCoordinates.Add(new Coordinates(x, y));
         yield return null;
         
@@ -103,9 +108,10 @@ public class GridManager : MonoBehaviour
     {
         foreach(Coordinates pathcoord in pathCoordinates)
         {
+            Destroy(grid.allGridArray[pathcoord.X, pathcoord.Y]);
             grid.PlayerOccupyBlueGrid(pathcoord.X, pathcoord.Y, sprite);
             blueCoordinates.Add(pathcoord);
-            Destroy(grid.pathGridArray[pathcoord.X, pathcoord.Y]);
+            
 
 
         }
@@ -113,8 +119,9 @@ public class GridManager : MonoBehaviour
     }
     public IEnumerator ConvertToBlueGrid(int x, int y)
     {
+        Destroy(grid.allGridArray[x, y]);
         grid.PlayerOccupyBlueGrid(x, y, sprite);
-        Destroy(grid.pathGridArray[x, y]);  
+        
         blueCoordinates.Add(new Coordinates(x, y));
         yield return null;
     }

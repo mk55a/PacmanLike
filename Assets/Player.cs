@@ -196,7 +196,16 @@ public class Player : MonoBehaviour
         if (previousGridX != x || previousGridY != y)
         {
             //Debug.LogWarning("Generating a blue/path grid");
-            if (GridManager.Instance.grid.blueGridArray[previousGridX, previousGridY] == null && GridManager.Instance.grid.pathGridArray[previousGridX, previousGridY] == null && GridManager.Instance.grid.boundaryGridArray[previousGridX,previousGridY] ==null)
+            /* if (GridManager.Instance.grid.blueGridArray[previousGridX, previousGridY] == null && GridManager.Instance.grid.pathGridArray[previousGridX, previousGridY] == null && GridManager.Instance.grid.boundaryGridArray[previousGridX,previousGridY] ==null)
+             {
+
+             }*/
+            //Debug.LogWarning(GridManager.Instance.grid.allGridArray[previousGridX, previousGridY].layer);
+            /*if (GridManager.Instance.grid.allGridArray[previousGridX, previousGridY].layer != LayerMask.NameToLayer("BlueGrid") && GridManager.Instance.grid.allGridArray[previousGridX, previousGridY].layer != LayerMask.NameToLayer("Boundary") && GridManager.Instance.grid.allGridArray[previousGridX, previousGridY].layer != LayerMask.NameToLayer("PathGrid"))
+            {
+                
+            }*/
+            if(GridManager.Instance.grid.allGridArray[previousGridX, previousGridY].layer == LayerMask.NameToLayer("Grid"))
             {
                 if (noOfPathGrids == 0)
                 {
@@ -219,6 +228,9 @@ public class Player : MonoBehaviour
         int x, y;
         x = Mathf.FloorToInt((position - GridManager.Instance.originObject.transform.position).x / GridManager.Instance.gridCellSize);
         y = Mathf.FloorToInt((position - GridManager.Instance.originObject.transform.position).y / GridManager.Instance.gridCellSize);
+
+        GridManager.Instance.grid.allGridArray[x, y].layer = LayerMask.NameToLayer("PathGrid");
+        StartCoroutine(GridManager.Instance.PlayerOccupyPathGrid(x, y));
         Debug.Log("Boundary Collided");
         if (GridManager.Instance.pathCoordinates.Contains(pathStartGrid))
         {
@@ -227,10 +239,12 @@ public class Player : MonoBehaviour
 
         if(previousGridX!=x || previousGridY != y)
         {
-            /*if (GridManager.Instance.grid.pathGridArray[previousGridX, previousGridY] == null)
+            if (GridManager.Instance.grid.allGridArray[previousGridX,previousGridY].layer == LayerMask.NameToLayer("Grid"))
             {
+                Debug.Log("Hittting border something happened");
                 GetGridXY(position);
-            }*/
+            }
+            
         }
     }
     private void CaptureGrid()

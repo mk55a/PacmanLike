@@ -199,7 +199,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30394ac4c0ef50c4eaa0d028b10a4522, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 40
+  width: 25
   height: 25
   gridCellSize: 2
   sprite: {fileID: 21300000, guid: 3445d1f239d74244583a0560d4deca0c, type: 3}

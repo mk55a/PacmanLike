@@ -9,8 +9,8 @@ public class Grid
     private Vector2 originPosition;
     private int[,] gridArray;
     private TextMesh[,] debugTextArray;
-    public GameObject[,] blueGridArray,pathGridArray;
-    public GameObject[,] boundaryGridArray;
+    //public GameObject[,] blueGridArray,pathGridArray;
+    //public GameObject[,] boundaryGridArray;
     public GameObject[,] allGridArray;
     public Grid(int width, int height, float cellSize, Vector2 originPosition)
     {
@@ -21,9 +21,9 @@ public class Grid
 
         gridArray = new int[width, height];
         //debugTextArray = new TextMesh[width, height];
-        blueGridArray = new GameObject[width, height];
+        /*blueGridArray = new GameObject[width, height];
         pathGridArray = new GameObject[width, height];
-        boundaryGridArray = new GameObject[width, height];
+        boundaryGridArray = new GameObject[width, height];*/
         allGridArray = new GameObject[width, height];
         Debug.Log(width + ", " + height);
 
@@ -61,24 +61,24 @@ public class Grid
         for (int x=0; x<width; x++)
         {
             int y = 0;
-            boundaryGridArray[x, y] = Utils.CreateWorldBoundaries(gridArray[x, y].ToString(), sprite, GetWorldPosition(x, y) + new Vector2(cellSize, cellSize) * 0.5f, new Vector2(1.6f, 1.6f), 10, Color.white);
+            allGridArray[x, y] = Utils.CreateWorldBoundaries(gridArray[x, y].ToString(), sprite, GetWorldPosition(x, y) + new Vector2(cellSize, cellSize) * 0.5f, new Vector2(1.6f, 1.6f), 10, Color.white);
         }
         for(int y = 1; y<height; y++)
         {
             int x = 0;
-            boundaryGridArray[x, y] = Utils.CreateWorldBoundaries(gridArray[x, y].ToString(), sprite, GetWorldPosition(x, y) + new Vector2(cellSize, cellSize) * 0.5f, new Vector2(1.6f, 1.6f), 10, Color.white);
+            allGridArray[x, y] = Utils.CreateWorldBoundaries(gridArray[x, y].ToString(), sprite, GetWorldPosition(x, y) + new Vector2(cellSize, cellSize) * 0.5f, new Vector2(1.6f, 1.6f), 10, Color.white);
         }
         for (int x = 0; x < width; x++)
         {
             int y = height-1;
             //Debug.LogWarning(x + "," + y);
-            boundaryGridArray[x, y] = Utils.CreateWorldBoundaries(gridArray[x, y].ToString(), sprite, GetWorldPosition(x, y) + new Vector2(cellSize, cellSize) * 0.5f, new Vector2(1.6f, 1.6f), 10, Color.white);
+            allGridArray[x, y] = Utils.CreateWorldBoundaries(gridArray[x, y].ToString(), sprite, GetWorldPosition(x, y) + new Vector2(cellSize, cellSize) * 0.5f, new Vector2(1.6f, 1.6f), 10, Color.white);
         }
         for (int y = 1; y < height; y++)
         {
             int x = width-1;
             //Debug.LogWarning(x+","+y);
-            boundaryGridArray[x, y] = Utils.CreateWorldBoundaries(gridArray[x, y].ToString(), sprite, GetWorldPosition(x, y) + new Vector2(cellSize, cellSize) * 0.5f, new Vector2(1.6f, 1.6f), 10, Color.white);
+            allGridArray[x, y] = Utils.CreateWorldBoundaries(gridArray[x, y].ToString(), sprite, GetWorldPosition(x, y) + new Vector2(cellSize, cellSize) * 0.5f, new Vector2(1.6f, 1.6f), 10, Color.white);
         }
     }
     /*public void OccupyGrid(Vector2 worldPosition, Sprite sprite)
@@ -91,12 +91,12 @@ public class Grid
     public void PlayerOccupyPathGrid(int x, int y, Sprite sprite)
     {
         
-        pathGridArray[x, y] =  Utils.CreatePathSprite(gridArray[x, y].ToString(), sprite, GetWorldPosition(x, y) + new Vector2(cellSize, cellSize) * 0.5f, new Vector2(1.6f, 1.6f), 10, Color.white); //Utils.CreateWorldSprite(gridArray[x,y].ToString(), sprite, GetWorldPosition(x,y)+new Vector2(cellSize, cellSize)*0.5f, new Vector2(1.6f,1.6f), 10,Color.white);
+        allGridArray[x, y] =  Utils.CreatePathSprite(gridArray[x, y].ToString(), sprite, GetWorldPosition(x, y) + new Vector2(cellSize, cellSize) * 0.5f, new Vector2(1.6f, 1.6f), 10, Color.white); //Utils.CreateWorldSprite(gridArray[x,y].ToString(), sprite, GetWorldPosition(x,y)+new Vector2(cellSize, cellSize)*0.5f, new Vector2(1.6f,1.6f), 10,Color.white);
 
     }
     public void PlayerOccupyBlueGrid(int x, int y, Sprite sprite)
     {
-        blueGridArray[x,y] = Utils.CreateWorldSprite(gridArray[x,y].ToString(), sprite, GetWorldPosition(x,y)+ new Vector2(cellSize,cellSize) *0.5f, new Vector2(1.6f,1.6f), 10, Color.white) ;
+        allGridArray[x,y] = Utils.CreateWorldSprite(gridArray[x,y].ToString(), sprite, GetWorldPosition(x,y)+ new Vector2(cellSize,cellSize) *0.5f, new Vector2(1.6f,1.6f), 10, Color.white) ;
 
     }
     private Vector2 GetWorldPosition(int x, int y)

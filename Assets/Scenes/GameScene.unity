@@ -164,6 +164,7 @@ GameObject:
   m_Component:
   - component: {fileID: 170665293}
   - component: {fileID: 170665294}
+  - component: {fileID: 170665295}
   m_Layer: 0
   m_Name: GridManager
   m_TagString: Untagged
@@ -203,6 +204,19 @@ MonoBehaviour:
   gridCellSize: 2
   sprite: {fileID: 21300000, guid: 3445d1f239d74244583a0560d4deca0c, type: 3}
   originObject: {fileID: 51515047}
+--- !u!114 &170665295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 170665292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00ed7108f0d953c499af8a32d1203ce7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fillDelay: 0.2
 --- !u!1 &171525425
 GameObject:
   m_ObjectHideFlags: 0
@@ -388,7 +402,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!61 &362217120
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -597,7 +611,7 @@ Transform:
   m_GameObject: {fileID: 1738587327}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 16.920103, y: 8.964131, z: -0.3117857}
+  m_LocalPosition: {x: -29, y: -22, z: -0.3117857}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

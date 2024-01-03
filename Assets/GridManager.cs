@@ -4,11 +4,12 @@ using UnityEngine;
 using TMPro;
 using EmptyCharacter.Utils;
 using System.Drawing;
+using System.Runtime.CompilerServices;
 
 public class GridManager : MonoBehaviour
 {
     public static GridManager Instance { get; private set; }
-    [SerializeField] private int width, height;
+    [SerializeField] public int width, height;
     [SerializeField] public float gridCellSize;
     [SerializeField] public Sprite sprite;
     [SerializeField] public GameObject originObject;
@@ -37,9 +38,34 @@ public class GridManager : MonoBehaviour
     {
         grid = new Grid(width, height, 2f, originObject.transform.position);
         grid.SetBoundaries(sprite);
-        
+        DestroyGridForBoundaries();
+
         allCoordinates = grid.AllGrids();
         //PrintAllCoordinates();
+    }
+    private void DestroyGridForBoundaries()
+    {
+        for (int x = 0; x < width; x++)
+        {
+            int y = 0;
+            Destroy(grid.allGridArray[x,y]);
+        }
+        for (int y = 1; y < height; y++)
+        {
+            int x = 0;
+            Destroy(grid.allGridArray[x, y]);
+        }
+        for (int x = 0; x < width; x++)
+        {
+            int y = height - 1;
+            Destroy(grid.allGridArray[x, y]);
+        }
+        for (int y = 1; y < height; y++)
+        {
+            int x = width - 1;
+            Destroy(grid.allGridArray[x, y]);
+
+        }
     }
     private void PrintAllCoordinates()
     {
@@ -50,96 +76,47 @@ public class GridManager : MonoBehaviour
     }
     public void Connect()
     {
-        //Debug.Log("Connect : " + new Vector2(pathCoordinates[0].X, pathCoordinates[0].Y) + " :: " + new Vector2(pathCoordinates[pathCoordinates.Count -1].X, pathCoordinates[pathCoordinates.Count - 1].Y));
-        //all path grid become blue grid. 
-        CalculateCapturedGrid();
-
-
-
-        foreach (Coordinates pathCoord in pathCoordinates)
-        {
-            blueCoordinates.Add(pathCoord);
-            grid.PlayerOccupyBlueGrid(pathCoord.X, pathCoord.Y, sprite);
-            Destroy(grid.pathGridArray[pathCoord.X,pathCoord.Y]);
-        }
-
-
-        
-
-        //sCheckAround(x, y);  
-    }
-    public void CheckAround(int x, int y)
-    {
-       
-    }
-    public void CalculateCapturedGrid()
-    {
-        int minX= int.MaxValue ,minY = int.MaxValue, maxX=int.MinValue, maxY=int.MinValue;
-        int startIndex=0;
-        foreach(Coordinates coord in pathCoordinates)
-        {
-            if(coord == Player.Instance.pathEndGrid)
-            {
-                
-                Debug.LogWarning("Ending on path grid");
-            }
-            else
-            {
-                //Debug.LogWarning(new Vector2(coord.X,coord.Y) + " ;  "+ new Vector2(Player.Instance.pathEndGrid.X, Player.Instance.pathEndGrid.Y)); 
-                //Debug.LogWarning(Player.Instance.pathEndGrid.X);
-            }
-        }
-        /*if (pathCoordinates.Contains(Player.Instance.pathEndGrid))
-        {
-            Debug.LogWarning("Ending on path grid");
-            //It is ending by enclosing onto the path
-            startIndex = pathCoordinates.IndexOf(Player.Instance.pathEndGrid);
-            Debug.LogWarning(startIndex + "  " + Player.Instance.pathEndGrid);
-
-            //Other sitatuation is it is connecting with boundary or a blue grid. 
-        }*/
-        //Currently this is calculating all the coordinates. Instead get the startPath and reduce it from the list of path coordinates. So we get smaller blocks. Also it is crashing. 
-
-        Debug.Log("start Index : " + startIndex);
-        for(int i = startIndex;  i < pathCoordinates.Count; i++)
-        {
-            minX = Mathf.Min(minX, pathCoordinates[i].X);
-            minY = Mathf.Min(minY, pathCoordinates[i].Y);
-            maxX = Mathf.Max(maxX, pathCoordinates[i].X);
-            maxY = Mathf.Max(maxY, pathCoordinates[i].Y);
-        }
-        /*foreach (Coordinates coord in pathCoordinates)
+        //Haveto find one grid/Coordinate which lies in the enclosed area of the path.
+        int minX = int.MaxValue, minY = int.MaxValue, maxX = int.MinValue, maxY = int.MinValue;
+        foreach (Coordinates coord in pathCoordinates)
         {
             minX = Mathf.Min(minX, coord.X);
-            minY= Mathf.Min(minY, coord.Y);
+            minY = Mathf.Min(minY, coord.Y);
             maxX = Mathf.Max(maxX, coord.X);
             maxY = Mathf.Max(maxY, coord.Y);
-        }*/
-
-        for(int x = minX; x <= maxX; x++)
-        {
-            for(int y = minY; y <= maxY; y++)
-            {
-                capturedCoordinates.Add(new Coordinates(x,y));
-            }
         }
-        /*foreach(Coordinates coord in capturedCoordinates)
-        {
-            PlayerOccupyPathGrid(coord.X,coord.Y);
-        }*/
-    }
+        int startPointX = (minX + maxX) / 2;
+        int startPointY = (minY + maxY) / 2;
+        ConvertPathToBlue();
+        FloodFill.Instance.InitiateFlood(startPointX, startPointY);
 
-    
-    public void PlayerOccupyPathGrid(int x, int y)
+    }
+    public IEnumerator PlayerOccupyPathGrid(int x, int y)
     {
         grid.PlayerOccupyPathGrid(x, y, sprite);
         Destroy(grid.allGridArray[x, y]);
         pathCoordinates.Add(new Coordinates(x, y));
+        yield return null;
         
-        /*foreach(Coordinates coord in blueCoordinates) { 
-            Debug.LogWarning(coord.X+","+coord.Y);
+    }
+    public void ConvertPathToBlue()
+    {
+        foreach(Coordinates pathcoord in pathCoordinates)
+        {
+            grid.PlayerOccupyBlueGrid(pathcoord.X, pathcoord.Y, sprite);
+            blueCoordinates.Add(pathcoord);
+            Destroy(grid.pathGridArray[pathcoord.X, pathcoord.Y]);
 
-        }*/
+
+        }
+        pathCoordinates.Clear();
+    }
+    public IEnumerator ConvertToBlueGrid(int x, int y)
+    {
+        grid.PlayerOccupyBlueGrid(x, y, sprite);
+        Destroy(grid.pathGridArray[x, y]);  
+        blueCoordinates.Add(new Coordinates(x, y));
+        yield return null;
     }
 }
 

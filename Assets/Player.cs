@@ -91,12 +91,14 @@ public class Player : MonoBehaviour
     }
     public void HandlePlayerMovement()
     {
-        hit = Physics2D.Raycast(transform.position, transform.right, 1.5f, LayerMask.GetMask("Boundary"));
-        Debug.DrawRay(transform.position, transform.right*1.5f, Color.red);
+        hit = Physics2D.Raycast(transform.position, transform.right, 0.5f, LayerMask.GetMask("Boundary"));
+        Debug.DrawRay(transform.position, transform.right*0.5f, Color.red);
 
         if (hit.collider!=null )
         {
             _movementSpeed = 0;
+            OnCollideWithBoundary(transform.position);
+            GridManager.Instance.Connect();
         }
         else
         {
@@ -106,13 +108,13 @@ public class Player : MonoBehaviour
 
     private void HandlePlayerCollisions(Vector3 position)
     {
-        objectRaycast = Physics2D.Raycast(transform.position, transform.right, 1.5f, interactionLayerMasks);
-        //Debug.DrawRay(transform.position, transform.right * 1.5f, Color.green);
-        //Debug.Log(objectRaycast.collider);
+        objectRaycast = Physics2D.Raycast(transform.position, transform.right, 0.5f, interactionLayerMasks);
+
         if (objectRaycast.collider != null)
         {
             string collidedLayerName = LayerMask.LayerToName(objectRaycast.collider.gameObject.layer); //LayerMask.LayerToName(objectRaycast.collider.gameObject.layer);
             Interactables collidedInteractable = (Interactables)Enum.Parse(typeof(Interactables), collidedLayerName);
+            //Debug.LogWarning(collidedInteractable.ToString());  
             switch (collidedInteractable)
             {
                 case Interactables.PathGrid:
@@ -123,15 +125,16 @@ public class Player : MonoBehaviour
                     GetGridXY(position);
                     GridManager.Instance.Connect();
                     break;
+                
                 case Interactables.BlueGrid:
-                    //GetGridXY(position);
-                    GetBlueGridXY(position);
+
                     Debug.Log("<color=blue>BLUE</color> ");
                     GridManager.Instance.Connect();
                   
                     break;
+                
                 case Interactables.Grid:
-                    //Debug.Log("GRID");
+
                     GetGridXY(position);
 
                     break;
@@ -139,19 +142,27 @@ public class Player : MonoBehaviour
                 case Interactables.Enemy:
                     Debug.Log("<color=red>ENEMY</color>");
                     break;
+                
                 case Interactables.PowerUp:
 
                     break;
+                
+                case Interactables.Boundary:
+                    Debug.Log("<color=blue>WALL</color> ");
+                    OnCollideWithBoundary(position);
+                    GridManager.Instance.Connect();
+                    break;
+
                 default:
                     Debug.Log("D");
                     break;
 
             }
         }
-        //Debug.Log("<color=yellow>"+objectRaycast.collider.name+"</color>");
+
         else
         {
-            Debug.LogError("Object reference is null");
+            Debug.Log("Object reference is null");
         }
 
     }
@@ -202,48 +213,29 @@ public class Player : MonoBehaviour
         
         
     }
-    private void GetBlueGridXY(Vector3 postion)
+
+    private void OnCollideWithBoundary(Vector3 position)
     {
         int x, y;
-        x = Mathf.FloorToInt((postion - GridManager.Instance.originObject.transform.position).x / GridManager.Instance.gridCellSize);
-        y = Mathf.FloorToInt((postion - GridManager.Instance.originObject.transform.position).y / GridManager.Instance.gridCellSize);
-        pathEndGrid = new Coordinates(x, y); //was x,y
-        /*foreach(Coordinates coord in GridManager.Instance.pathCoordinates)
+        x = Mathf.FloorToInt((position - GridManager.Instance.originObject.transform.position).x / GridManager.Instance.gridCellSize);
+        y = Mathf.FloorToInt((position - GridManager.Instance.originObject.transform.position).y / GridManager.Instance.gridCellSize);
+        Debug.Log("Boundary Collided");
+        if (GridManager.Instance.pathCoordinates.Contains(pathStartGrid))
         {
-            if(new Coordinates(coord.X,coord.Y)== pathEndGrid)
-            {
-                Debug.LogWarning("Ending it with Path grid");
-            } 
-        }*/
-        Debug.Log("pathEnd : " + new Vector2(pathEndGrid.X, pathEndGrid.Y) + "  " + "pathStart : " + new Vector2(pathStartGrid.X, pathEndGrid.Y));
-        Debug.Log("number of grids : " + noOfPathGrids);
-        if(previousGridX!=x || previousGridY != y)
-        {
-            if (GridManager.Instance.grid.pathGridArray[previousGridX, previousGridY] == null)
-            {
-                GetGridXY(postion); 
-            }
-            
-            if (GridManager.Instance.grid.blueGridArray[x, y] != null || GridManager.Instance.grid.pathGridArray[x, y] != null)
-            {
-                //Check lenght of the path grid to know what action should be done
-                if(noOfPathGrids>0)
-                {
-                    Debug.Log("Resettiung path start grid");
-                    pathStartGrid = pathEndGrid;
-                    noOfPathGrids = 0;
-                }
-                
-
-            }
+            pathEndGrid = new Coordinates(x, y);
         }
 
-        
-
+        if(previousGridX!=x || previousGridY != y)
+        {
+            /*if (GridManager.Instance.grid.pathGridArray[previousGridX, previousGridY] == null)
+            {
+                GetGridXY(position);
+            }*/
+        }
     }
     private void CaptureGrid()
     {   
-        GridManager.Instance.PlayerOccupyPathGrid(previousGridX, previousGridY);    
+        StartCoroutine(GridManager.Instance.PlayerOccupyPathGrid(previousGridX, previousGridY));    
     }
 
     public Vector2 GetPlayerWorldPosition()
@@ -257,15 +249,12 @@ public class Player : MonoBehaviour
         return worldPosition;
     }
 }
-public enum PowerUps
-{
-     
-}
 public enum Interactables
 {
     PathGrid,
     BlueGrid,
     Grid,
+    Boundary,
     Enemy,
     PowerUp
 }

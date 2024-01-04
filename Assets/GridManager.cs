@@ -72,7 +72,7 @@ public class GridManager : MonoBehaviour
     {
         foreach(Coordinates coord in allCoordinates)
         {
-            Debug.LogWarning(coord.X+","+coord.Y);
+            //Debug.LogWarning(coord.X+","+coord.Y);
         }
     }
     public void Connect()
@@ -81,7 +81,7 @@ public class GridManager : MonoBehaviour
         int minX = int.MaxValue, minY = int.MaxValue, maxX = int.MinValue, maxY = int.MinValue;
         foreach (Coordinates coord in pathCoordinates)
         {
-            Debug.Log(coord.X + ";" + coord.Y);
+            //Debug.Log(coord.X + ";" + coord.Y);
             minX = Mathf.Min(minX, coord.X);
             minY = Mathf.Min(minY, coord.Y);
             maxX = Mathf.Max(maxX, coord.X);
@@ -89,8 +89,8 @@ public class GridManager : MonoBehaviour
         }
         int startPointX = (minX + maxX) / 2;
         int startPointY = (minY + maxY) / 2;
-        Debug.LogWarning(startPointX + ";;" + startPointY);
-        //ConvertPathToBlue();
+        //Debug.LogWarning(startPointX + ";;" + startPointY);
+        
 
         FloodFill.Instance.InitiateFlood(startPointX, startPointY);
 

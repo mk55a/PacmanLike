@@ -92,7 +92,7 @@ public class Player : MonoBehaviour
     public void HandlePlayerMovement()
     {
         hit = Physics2D.Raycast(transform.position, transform.right, 0.5f, LayerMask.GetMask("Boundary"));
-        Debug.DrawRay(transform.position, transform.right*0.5f, Color.red);
+        //Debug.DrawRay(transform.position, transform.right*0.5f, Color.red);
 
         if (hit.collider!=null )
         {
@@ -154,7 +154,7 @@ public class Player : MonoBehaviour
                     break;
 
                 default:
-                    Debug.Log("D");
+                    //Debug.Log("D");
                     break;
 
             }
@@ -231,7 +231,7 @@ public class Player : MonoBehaviour
 
         GridManager.Instance.grid.allGridArray[x, y].layer = LayerMask.NameToLayer("PathGrid");
         StartCoroutine(GridManager.Instance.PlayerOccupyPathGrid(x, y));
-        Debug.Log("Boundary Collided");
+        //Debug.Log("Boundary Collided");
         if (GridManager.Instance.pathCoordinates.Contains(pathStartGrid))
         {
             pathEndGrid = new Coordinates(x, y);
@@ -241,7 +241,7 @@ public class Player : MonoBehaviour
         {
             if (GridManager.Instance.grid.allGridArray[previousGridX,previousGridY].layer == LayerMask.NameToLayer("Grid"))
             {
-                Debug.Log("Hittting border something happened");
+                //Debug.Log("Hittting border something happened");
                 GetGridXY(position);
             }
             

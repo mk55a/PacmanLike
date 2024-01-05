@@ -87,7 +87,28 @@ public class Player : MonoBehaviour
         UpdatePlayerSprite();
         HandlePlayerMovement();
         _rigidBody.velocity = _input * _movementSpeed;
-        HandlePlayerCollisions(_player.transform.position);
+        GetPlayerGrid();
+        //HandlePlayerCollisions(_player.transform.position);
+    }
+    private void UpdatePlayerSprite()
+    {
+        switch (_spriteDirection)
+        {
+            case SpriteDirection.Left:
+                _player.transform.rotation = Quaternion.Euler(0f, 0f, 180f);
+                break;
+            case SpriteDirection.Right:
+                _player.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+                break;
+            case SpriteDirection.Up:
+                _player.transform.rotation = Quaternion.Euler(0f, 0f, 90f);
+                break;
+            case SpriteDirection.Down:
+                _player.transform.rotation = Quaternion.Euler(0f, 0f, -90f);
+                break;
+            default:
+                return;
+        }
     }
     public void HandlePlayerMovement()
     {
@@ -97,7 +118,7 @@ public class Player : MonoBehaviour
         if (hit.collider!=null )
         {
             _movementSpeed = 0;
-            OnCollideWithBoundary(transform.position);
+            //OnCollideWithBoundary(transform.position);
             GridManager.Instance.Connect();
         }
         else
@@ -106,7 +127,19 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void HandlePlayerCollisions(Vector3 position)
+
+    private void GetPlayerGrid()
+    {
+        GridMapObject gridObject = GridManager.Instance.grid.GetGridObject(transform.position);
+        if(gridObject != null)
+        {
+            if (gridObject.GetType() == GridType.Grid)
+            {
+                GridManager.Instance.SetGridAsPath(gridObject, transform.position);
+            }
+        }
+    }
+    /*private void HandlePlayerCollisions(Vector3 position)
     {
         objectRaycast = Physics2D.Raycast(transform.position, transform.right, 0.5f, interactionLayerMasks);
 
@@ -165,28 +198,9 @@ public class Player : MonoBehaviour
             Debug.Log("Object reference is null");
         }
 
-    }
+    }*/
     
-    private void UpdatePlayerSprite()
-    {
-        switch( _spriteDirection )
-        {
-            case SpriteDirection.Left:
-                _player.transform.rotation = Quaternion.Euler(0f, 0f, 180f);
-                break;
-            case SpriteDirection.Right:
-                _player.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
-                break;
-            case SpriteDirection.Up:
-                _player.transform.rotation = Quaternion.Euler(0f, 0f, 90f);
-                break;
-            case SpriteDirection.Down:
-                _player.transform.rotation = Quaternion.Euler(0f, 0f, -90f);
-                break;
-                default:
-                return;
-        }
-    }
+    
 
     private void GetGridXY(Vector3 postion)
     {
@@ -230,7 +244,7 @@ public class Player : MonoBehaviour
         y = Mathf.FloorToInt((position - GridManager.Instance.originObject.transform.position).y / GridManager.Instance.gridCellSize);
 
         GridManager.Instance.grid.allGridArray[x, y].layer = LayerMask.NameToLayer("PathGrid");
-        StartCoroutine(GridManager.Instance.PlayerOccupyPathGrid(x, y));
+        //StartCoroutine(GridManager.Instance.PlayerOccupyPathGrid(x, y));
         //Debug.Log("Boundary Collided");
         if (GridManager.Instance.pathCoordinates.Contains(pathStartGrid))
         {
@@ -249,7 +263,7 @@ public class Player : MonoBehaviour
     }
     private void CaptureGrid()
     {   
-        StartCoroutine(GridManager.Instance.PlayerOccupyPathGrid(previousGridX, previousGridY));    
+       // StartCoroutine(GridManager.Instance.PlayerOccupyPathGrid(previousGridX, previousGridY));    
     }
 
     public Vector2 GetPlayerWorldPosition()

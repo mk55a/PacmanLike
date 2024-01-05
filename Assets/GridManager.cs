@@ -36,13 +36,43 @@ public class GridManager : MonoBehaviour
     }
     private void Start()
     {
-        grid = new Grid<GridMapObject>(width, height, 2f, originObject.transform.position, ()=>new GridMapObject());
+        grid = new Grid<GridMapObject>(width, height, 2f, originObject.transform.position, (Grid<GridMapObject> g, int x, int y)=>new GridMapObject(g,x,y));
 
         DestroyGridForBoundaries();
-        grid.SetBoundaries(sprite);
+        SetBoundaries();
         allCoordinates = grid.AllGrids();
     }
-    
+    private void Update()
+    {
+        if(Input.GetMouseButtonDown(0))
+        {
+            Vector3 position = Utils.GetMouseWorldPosition();
+            GridMapObject gridObject = grid.GetGridObject(position);
+            if(gridObject != null)
+            {
+                //gridObject.SetType(GridType.PathGrid);
+                SetGridAsPath(gridObject,position);
+                int x,y;
+                grid.GetXY(position, out x, out y);
+                grid.InstantiateSprite(x, y, sprite);
+                
+            }
+        }
+    }
+    public void SetGridAsPath(GridMapObject gridMapObject, Vector2 position)
+    {
+        gridMapObject.SetType(GridType.PathGrid);
+        int x, y;
+        grid.GetXY(position, out x, out y);
+        pathCoordinates.Add(new Coordinates(x, y));
+        //Make the below line a coroutine so I can animate it.
+        grid.InstantiateSprite(x, y, sprite);
+    }
+    public void SetGridAsBlue(GridMapObject gridMapObject, int x, int y)
+    {
+        gridMapObject.SetType(GridType.BlueGrid);
+        grid.InstantiateSprite(x, y, sprite);
+    }
     private void DestroyGridForBoundaries()
     {
         for (int x = 0; x < width; x++)
@@ -88,36 +118,38 @@ public class GridManager : MonoBehaviour
         FloodFill.Instance.InitiateFlood(startPointX, startPointY);
 
     }
-    public IEnumerator PlayerOccupyPathGrid(int x, int y)
+
+    public void SetBoundaries()
     {
-        Destroy(grid.allGridArray[x, y]);
-        grid.PlayerOccupyPathGrid(x, y, sprite);
-        
-        pathCoordinates.Add(new Coordinates(x, y));
-        yield return null;
-        
-    }
-    public void ConvertPathToBlue()
-    {
-        foreach(Coordinates pathcoord in pathCoordinates)
+        for (int x = 0; x < width; x++)
         {
-            Destroy(grid.allGridArray[pathcoord.X, pathcoord.Y]);
-            grid.PlayerOccupyBlueGrid(pathcoord.X, pathcoord.Y, sprite);
-            blueCoordinates.Add(pathcoord);
-            
-
-
+            int y = 0;
+            grid.allGridArray[x, y] = Utils.CreateWorldBoundaries(grid.gridArray[x, y].ToString(), sprite, grid.GetWorldPosition(x, y) + new Vector2(grid.GetCellSize(), grid.GetCellSize()) * 0.5f, new Vector2(1.6f, 1.6f), 10, UnityEngine.Color.white);
+            grid.gridArray[x, y].SetType(GridType.Boundary);
         }
-        pathCoordinates.Clear();
+        for (int y = 1; y < height; y++)
+        {
+            int x = 0;
+            grid.allGridArray[x, y] = Utils.CreateWorldBoundaries(grid.gridArray[x, y].ToString(), sprite, grid.GetWorldPosition(x, y) + new Vector2(grid.GetCellSize(), grid.GetCellSize()) * 0.5f, new Vector2(1.6f, 1.6f), 10, UnityEngine.Color.white);
+            grid.gridArray[x, y].SetType(GridType.Boundary);
+        }
+        for (int x = 0; x < width; x++)
+        {
+            int y = height - 1;
+            //Debug.LogWarning(x + "," + y);
+            grid.allGridArray[x, y] = Utils.CreateWorldBoundaries(grid.gridArray[x, y].ToString(), sprite, grid.GetWorldPosition(x, y) + new Vector2(grid.GetCellSize(), grid.GetCellSize()) * 0.5f, new Vector2(1.6f, 1.6f), 10, UnityEngine.Color.white);
+            grid.gridArray[x, y].SetType(GridType.Boundary);
+        }
+        for (int y = 1; y < height; y++)
+        {
+            int x = width - 1;
+            //Debug.LogWarning(x+","+y);
+            grid.allGridArray[x, y] = Utils.CreateWorldBoundaries(grid.gridArray[x, y].ToString(), sprite, grid.GetWorldPosition(x, y) + new Vector2(grid.GetCellSize(), grid.GetCellSize()) * 0.5f, new Vector2(1.6f, 1.6f), 10, UnityEngine.Color.white);
+            grid.gridArray[x, y].SetType(GridType.Boundary);
+        }
     }
-    public IEnumerator ConvertToBlueGrid(int x, int y)
-    {
-        Destroy(grid.allGridArray[x, y]);
-        grid.PlayerOccupyBlueGrid(x, y, sprite);
-        
-        blueCoordinates.Add(new Coordinates(x, y));
-        yield return null;
-    }
+
+
 }
 
 public class Coordinates
@@ -141,19 +173,29 @@ public class GridMapObject
     private const string BLUEGRID = "BlueGrid";
     private const string GRID = "Grid";
 
-    public GridType type; 
-
-    public GridMapObject()
+    private Grid<GridMapObject> grid;
+    private int x, y;
+    private GridType type; 
+    
+    public GridMapObject(Grid<GridMapObject> grid, int x, int y)
     {
-        this.type = GridType.Grid;
+        this.grid = grid;
+        this.x= x;
+        this.y= y;
+        
     }
     public void SetType(GridType type)
     {
         this.type = type;
+        grid.TriggerGridObjectChanged(x, y);
     }
     public GridType GetType()
     {
         return this.type;
+    }
+    public override string ToString()
+    {
+        return type.ToString();
     }
 }
 
@@ -161,5 +203,6 @@ public enum GridType
 {
     Grid,
     PathGrid,
-    BlueGrid
+    BlueGrid,
+    Boundary
 }

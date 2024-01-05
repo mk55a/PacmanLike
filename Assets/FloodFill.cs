@@ -21,21 +21,29 @@ public class FloodFill : MonoBehaviour
         WaitForSeconds wait = new WaitForSeconds(fillDelay);
         if(x>=0 && x<gridManager.width && y>=0 && y < gridManager.height)
         {
-            Debug.LogWarning("Checking if  flood is possible");
-            //yield return wait;
+            //Debug.LogWarning("Checking if  flood is possible");
+            yield return wait;
             //Now check if the tile exists in gridArray and blueArray.If not in blue array turn to blue? 
             //Debug.LogWarning(x + ",," + y + "...."+ gridManager.grid.allGridArray[x, y].layer);
-            if (gridManager.grid.allGridArray[x,y].layer == LayerMask.NameToLayer("Grid")) //&& !gridManager.blueCoordinates.Contains(new Coordinates(x,y))
+            /*if (gridManager.grid.allGridArray[x,y].layer == LayerMask.NameToLayer("Grid")) //&& !gridManager.blueCoordinates.Contains(new Coordinates(x,y))
             {
                 //Change grid to blue as it does not exist 
                 Debug.LogWarning(x + "," + y);
                 StartCoroutine(gridManager.ConvertToBlueGrid(x, y));
-
-                /*StartCoroutine(Flood(x + 1, y));
+                gridManager.SetGridAsBlue( ,x,y);
+                *//*StartCoroutine(Flood(x + 1, y));
                 StartCoroutine(Flood(x - 1, y));
                 StartCoroutine(Flood(x, y + 1));
                 StartCoroutine(Flood(x, y - 1));
-*/
+*//*
+            }*/
+            if (gridManager.grid.gridArray[x,y].GetType() == GridType.Grid)
+            {
+                gridManager.SetGridAsBlue(gridManager.grid.gridArray[x,y],x,y);
+                StartCoroutine(Flood(x + 1, y));
+                StartCoroutine(Flood(x - 1, y));
+                StartCoroutine(Flood(x, y + 1));
+                StartCoroutine(Flood(x, y - 1));
             }
             
             yield return wait;

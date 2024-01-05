@@ -13,7 +13,7 @@ public class GridManager : MonoBehaviour
     [SerializeField] public float gridCellSize;
     [SerializeField] public Sprite sprite;
     [SerializeField] public GameObject originObject;
-    public Grid grid;
+    public Grid<GridMapObject> grid;
 
 
     public List<Coordinates> boundaryCoordinates;
@@ -36,14 +36,13 @@ public class GridManager : MonoBehaviour
     }
     private void Start()
     {
-        grid = new Grid(width, height, 2f, originObject.transform.position);
+        grid = new Grid<GridMapObject>(width, height, 2f, originObject.transform.position, ()=>new GridMapObject());
+
         DestroyGridForBoundaries();
         grid.SetBoundaries(sprite);
-        
-
         allCoordinates = grid.AllGrids();
-        //PrintAllCoordinates();
     }
+    
     private void DestroyGridForBoundaries()
     {
         for (int x = 0; x < width; x++)
@@ -68,13 +67,7 @@ public class GridManager : MonoBehaviour
 
         }
     }
-    private void PrintAllCoordinates()
-    {
-        foreach(Coordinates coord in allCoordinates)
-        {
-            //Debug.LogWarning(coord.X+","+coord.Y);
-        }
-    }
+
     public void Connect()
     {
         //Haveto find one grid/Coordinate which lies in the enclosed area of the path.
@@ -142,4 +135,31 @@ public class Coordinates
         Y = y;  
     }
 }
+public class GridMapObject
+{
+    private const string PATHGRID = "PathGrid";
+    private const string BLUEGRID = "BlueGrid";
+    private const string GRID = "Grid";
 
+    public GridType type; 
+
+    public GridMapObject()
+    {
+        this.type = GridType.Grid;
+    }
+    public void SetType(GridType type)
+    {
+        this.type = type;
+    }
+    public GridType GetType()
+    {
+        return this.type;
+    }
+}
+
+public enum GridType
+{
+    Grid,
+    PathGrid,
+    BlueGrid
+}

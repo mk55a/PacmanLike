@@ -35,7 +35,7 @@ public class Grid<TGridObject>
 
 
         allGridArray = new GameObject[width, height];
-        Debug.Log(width + ", " + height);
+        //Debug.Log(width + ", " + height);
 
         for (int x = 0; x < gridArray.GetLength(0); x++)
         {
@@ -47,7 +47,7 @@ public class Grid<TGridObject>
             }
         }
 
-        bool showDebug = true;
+        bool showDebug = false;
         if (showDebug)
         {
             TextMesh[,] debugTextArray = new TextMesh[width, height];
@@ -184,9 +184,17 @@ public class Grid<TGridObject>
             allGridArray[x, y] = Utils.CreateWorldBoundaries(gridArray[x, y].ToString(), sprite, GetWorldPosition(x, y) + new Vector2(cellSize, cellSize) * 0.5f, new Vector2(1.6f, 1.6f), 10, Color.white);
         }
     }
-    public void InstantiateSprite(int x, int y, Sprite sprite)
+    public void InstantiatePathSprite(int x, int y, Sprite sprite)
     {
         allGridArray[x, y] = Utils.CreatePathSprite(gridArray[x, y].ToString(), sprite, GetWorldPosition(x, y) + new Vector2(cellSize, cellSize) * 0.5f, new Vector2(1.6f, 1.6f),5,Color.white);
+    }
+    public void InstantiateBlueSprite(int x, int y , Sprite sprite)
+    {
+        allGridArray[x, y] = Utils.CreateWorldSprite(gridArray[x, y].ToString(), sprite, GetWorldPosition(x, y) + new Vector2(cellSize, cellSize) * 0.5f, new Vector2(1.6f, 1.6f), 5, Color.white);
+    }
+
+    public void InstantiateSelectedSprite(int x, int y , Sprite sprite) {
+        allGridArray[x,y] = Utils.CreateTestSprite(gridArray[x, y].ToString(), sprite, GetWorldPosition(x, y) + new Vector2(cellSize, cellSize) * 0.5f, new Vector2(1.6f, 1.6f), 5, Color.red);
     }
 
 }

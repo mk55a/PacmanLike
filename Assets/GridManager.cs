@@ -22,6 +22,8 @@ public class GridManager : MonoBehaviour
     public List<Coordinates> allCoordinates;
     public List<Coordinates> capturedCoordinates;
 
+
+    [SerializeField] private float fillDelay;
     private void Awake()
     {
         if(Instance == null)
@@ -54,7 +56,7 @@ public class GridManager : MonoBehaviour
                 SetGridAsPath(gridObject,position);
                 int x,y;
                 grid.GetXY(position, out x, out y);
-                grid.InstantiateSprite(x, y, sprite);
+                grid.InstantiatePathSprite(x, y, sprite);
                 
             }
         }
@@ -66,12 +68,22 @@ public class GridManager : MonoBehaviour
         grid.GetXY(position, out x, out y);
         pathCoordinates.Add(new Coordinates(x, y));
         //Make the below line a coroutine so I can animate it.
-        grid.InstantiateSprite(x, y, sprite);
+
+        StartCoroutine(InstantiatePathSprite(x, y));
+        
+    }
+
+    IEnumerator InstantiatePathSprite(int x, int y)
+    {
+        WaitForSeconds wait = new WaitForSeconds(fillDelay);
+        yield return wait;
+        grid.InstantiatePathSprite(x, y, sprite);
+
     }
     public void SetGridAsBlue(GridMapObject gridMapObject, int x, int y)
     {
         gridMapObject.SetType(GridType.BlueGrid);
-        grid.InstantiateSprite(x, y, sprite);
+        grid.InstantiateBlueSprite(x, y, sprite);
     }
     private void DestroyGridForBoundaries()
     {
@@ -112,11 +124,23 @@ public class GridManager : MonoBehaviour
         }
         int startPointX = (minX + maxX) / 2;
         int startPointY = (minY + maxY) / 2;
+        //grid.InstantiateSelectedSprite(startPointX, startPointY,sprite);
         //Debug.LogWarning(startPointX + ";;" + startPointY);
-        
+        PathToBlue();
 
+        
         FloodFill.Instance.InitiateFlood(startPointX, startPointY);
 
+    }
+
+    private void PathToBlue()
+    {
+        foreach(Coordinates coord in pathCoordinates)
+        {
+            Destroy(grid.allGridArray[coord.X, coord.Y]);
+            grid.InstantiateBlueSprite(coord.X, coord.Y, sprite);
+        }
+        pathCoordinates.Clear();
     }
 
     public void SetBoundaries()

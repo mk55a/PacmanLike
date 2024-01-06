@@ -34,7 +34,8 @@ public class Player : MonoBehaviour
 
     private int previousGridX, previousGridY;
     private int noOfPathGrids=0;
-    public Coordinates pathStartGrid, pathEndGrid; 
+    public Coordinates pathStartGrid, pathEndGrid;
+    private bool hasConnected = false; 
     
     private void Awake()
     {
@@ -115,14 +116,17 @@ public class Player : MonoBehaviour
         hit = Physics2D.Raycast(transform.position, transform.right, 0.5f, LayerMask.GetMask("Boundary"));
         //Debug.DrawRay(transform.position, transform.right*0.5f, Color.red);
 
-        if (hit.collider!=null )
+        if (hit.collider!=null && !hasConnected)
         {
             _movementSpeed = 0;
+            Debug.LogWarning("Collided with boundary");
             //OnCollideWithBoundary(transform.position);
             GridManager.Instance.Connect();
+            hasConnected = true;
         }
-        else
+        else if(hit.collider == null)
         {
+            hasConnected = false;
             _movementSpeed = _speed;
         }
     }
@@ -245,7 +249,7 @@ public class Player : MonoBehaviour
 
         GridManager.Instance.grid.allGridArray[x, y].layer = LayerMask.NameToLayer("PathGrid");
         //StartCoroutine(GridManager.Instance.PlayerOccupyPathGrid(x, y));
-        //Debug.Log("Boundary Collided");
+        Debug.Log("Boundary Collided");
         if (GridManager.Instance.pathCoordinates.Contains(pathStartGrid))
         {
             pathEndGrid = new Coordinates(x, y);

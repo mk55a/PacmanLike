@@ -22,7 +22,7 @@ public class FloodFill : MonoBehaviour
         if(x>=0 && x<gridManager.width && y>=0 && y < gridManager.height)
         {
             //Debug.LogWarning("Checking if  flood is possible");
-            yield return wait;
+            //yield return wait;
             //Now check if the tile exists in gridArray and blueArray.If not in blue array turn to blue? 
             //Debug.LogWarning(x + ",," + y + "...."+ gridManager.grid.allGridArray[x, y].layer);
             /*if (gridManager.grid.allGridArray[x,y].layer == LayerMask.NameToLayer("Grid")) //&& !gridManager.blueCoordinates.Contains(new Coordinates(x,y))

@@ -73,7 +73,28 @@ namespace EmptyCharacter.Utils
         }
         public static GameObject CreatePathSprite(Transform parent, string name, Sprite sprite, Vector2 localPosition, Vector2 localScale, int sortingOrder, Color color)
         {
-            GameObject gameObject = new GameObject("PathGrid", typeof(SpriteRenderer));
+            GameObject gameObject = new GameObject("Path", typeof(SpriteRenderer));
+            Transform transform = gameObject.transform;
+            transform.SetParent(parent, false);
+            transform.localPosition = localPosition;
+            transform.localScale = localScale;
+            SpriteRenderer spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+            spriteRenderer.sprite = sprite;
+            spriteRenderer.sortingOrder = sortingOrder;
+            spriteRenderer.color = color;
+            gameObject.layer = LayerMask.NameToLayer("PathGrid");
+            gameObject.AddComponent<BoxCollider2D>();
+            gameObject.GetComponent<BoxCollider2D>().size = new Vector2(1.3f, 1.3f);
+            return gameObject;
+
+        }
+        public static GameObject CreateTestSprite(string name, Sprite sprite, Vector2 position, Vector2 localScale, int sortingOrder, Color color)
+        {
+            return CreateTestSprite(null, name, sprite, position, localScale, sortingOrder, color);
+        }
+        public static GameObject CreateTestSprite(Transform parent, string name, Sprite sprite, Vector2 localPosition, Vector2 localScale, int sortingOrder, Color color)
+        {
+            GameObject gameObject = new GameObject("Test", typeof(SpriteRenderer));
             Transform transform = gameObject.transform;
             transform.SetParent(parent, false);
             transform.localPosition = localPosition;

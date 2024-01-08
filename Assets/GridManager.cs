@@ -148,27 +148,27 @@ public class GridManager : MonoBehaviour
         for (int x = 0; x < width; x++)
         {
             int y = 0;
-            grid.allGridArray[x, y] = Utils.CreateWorldBoundaries(grid.gridArray[x, y].ToString(), sprite, grid.GetWorldPosition(x, y) + new Vector2(grid.GetCellSize(), grid.GetCellSize()) * 0.5f, new Vector2(1.6f, 1.6f), 10, UnityEngine.Color.white);
+            grid.allGridArray[x, y] = Utils.CreateWorldBoundaries(grid.gridArray[x, y].ToString(), sprite, grid.GetWorldPosition(x, y) + new Vector3(grid.GetCellSize(), grid.GetCellSize()) * 0.5f, new Vector2(1.6f, 1.6f), 10, UnityEngine.Color.white);
             grid.gridArray[x, y].SetType(GridType.Boundary);
         }
         for (int y = 1; y < height; y++)
         {
             int x = 0;
-            grid.allGridArray[x, y] = Utils.CreateWorldBoundaries(grid.gridArray[x, y].ToString(), sprite, grid.GetWorldPosition(x, y) + new Vector2(grid.GetCellSize(), grid.GetCellSize()) * 0.5f, new Vector2(1.6f, 1.6f), 10, UnityEngine.Color.white);
+            grid.allGridArray[x, y] = Utils.CreateWorldBoundaries(grid.gridArray[x, y].ToString(), sprite, grid.GetWorldPosition(x, y) + new Vector3(grid.GetCellSize(), grid.GetCellSize()) * 0.5f, new Vector2(1.6f, 1.6f), 10, UnityEngine.Color.white);
             grid.gridArray[x, y].SetType(GridType.Boundary);
         }
         for (int x = 0; x < width; x++)
         {
             int y = height - 1;
             //Debug.LogWarning(x + "," + y);
-            grid.allGridArray[x, y] = Utils.CreateWorldBoundaries(grid.gridArray[x, y].ToString(), sprite, grid.GetWorldPosition(x, y) + new Vector2(grid.GetCellSize(), grid.GetCellSize()) * 0.5f, new Vector2(1.6f, 1.6f), 10, UnityEngine.Color.white);
+            grid.allGridArray[x, y] = Utils.CreateWorldBoundaries(grid.gridArray[x, y].ToString(), sprite, grid.GetWorldPosition(x, y) + new Vector3(grid.GetCellSize(), grid.GetCellSize()) * 0.5f, new Vector2(1.6f, 1.6f), 10, UnityEngine.Color.white);
             grid.gridArray[x, y].SetType(GridType.Boundary);
         }
         for (int y = 1; y < height; y++)
         {
             int x = width - 1;
             //Debug.LogWarning(x+","+y);
-            grid.allGridArray[x, y] = Utils.CreateWorldBoundaries(grid.gridArray[x, y].ToString(), sprite, grid.GetWorldPosition(x, y) + new Vector2(grid.GetCellSize(), grid.GetCellSize()) * 0.5f, new Vector2(1.6f, 1.6f), 10, UnityEngine.Color.white);
+            grid.allGridArray[x, y] = Utils.CreateWorldBoundaries(grid.gridArray[x, y].ToString(), sprite, grid.GetWorldPosition(x, y) + new Vector3(grid.GetCellSize(), grid.GetCellSize()) * 0.5f, new Vector2(1.6f, 1.6f), 10, UnityEngine.Color.white);
             grid.gridArray[x, y].SetType(GridType.Boundary);
         }
     }

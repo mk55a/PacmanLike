@@ -17,8 +17,8 @@ public class Pathfinding
         {
             Instance = this;
         }
-
-        _grid = new Grid<PathNode>(width, height,2f,Vector2.zero,(Grid<PathNode> g, int x, int y)=> new PathNode(g, x, y));
+        //_grid = new Grid<PathNode>(width, height,2f,Vector2.zero,(Grid<PathNode> g, int x, int y)=> new PathNode(g, x, y));
+        _grid = new Grid<PathNode>(width, height,2f,GridManager.Instance.originObject.transform.position,(Grid<PathNode> g, int x, int y)=> new PathNode(g, x, y));
     }
     public Grid<PathNode> GetGrid()
     {
@@ -29,8 +29,9 @@ public class Pathfinding
         _grid.GetXY(startWorldPosition, out int startX, out int startY);
         _grid.GetXY(endWorldPosition, out int endX, out int endY);
 
-        List<PathNode> path = FindPath(startX, startY, endX, endY); 
-        if(path == null)
+        List<PathNode> path = FindPath(startX, startY, endX, endY);
+        Debug.Log("Path is  " + startX + "," + startY + "," + endX + "," + endY);
+        if (path == null)
         {
             Debug.Log("Path is nul "+ startX+","+startY+","+endX+","+endY);
             return null; 
@@ -40,7 +41,8 @@ public class Pathfinding
             List<Vector3> vectorPath = new List<Vector3>();
             foreach(PathNode pathNode in path)
             {
-                vectorPath.Add(new Vector3(pathNode.x, pathNode.y) * _grid.GetCellSize() + Vector3.one * _grid.GetCellSize()*0.5f);
+                //vectorPath.Add(new Vector3(pathNode.x, pathNode.y) * _grid.GetCellSize() + Vector3.one * _grid.GetCellSize()*0.5f);
+                vectorPath.Add(GetGrid().GetWorldPosition(pathNode.x, pathNode.y));
             }
             Debug.Log("VectorPath: " + vectorPath.Count);
             return vectorPath;

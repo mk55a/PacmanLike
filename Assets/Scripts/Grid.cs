@@ -21,6 +21,7 @@ public class Grid<TGridObject>
 
     private TextMesh[,] debugTextArray;
     public GameObject[,] allGridArray;
+
     public Grid(int width, int height, float cellSize, Vector2 originPosition, Func<Grid<TGridObject>, int, int, TGridObject> createGridObject)
     {
         this.width = width;

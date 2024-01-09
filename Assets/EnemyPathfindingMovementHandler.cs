@@ -11,7 +11,7 @@ public class EnemyPathfindingMovementHandler : MonoBehaviour
     [SerializeField] private float speed;
     private int currentPathIndex;
     private List<Vector3> pathVectorList;
-
+    private List<PathNode> pathNodes;
 
     private void Start()
     {
@@ -20,21 +20,22 @@ public class EnemyPathfindingMovementHandler : MonoBehaviour
 
     private void Update()
     {
-        HandleMovement();
-        if(Input.GetMouseButtonDown(0))
+        //HandleMovement();
+        /*if(Input.GetMouseButtonDown(0))
         {
             SetTargetPosition(Utils.GetMouseWorldPosition());   
-        }
+        }*/
     }
 
-    private void HandleMovement()
+    public void HandleMovement()
     {
         if(pathVectorList!= null)
         {
-            Debug.Log("pathVectorList not null");
+            //Debug.Log("pathVectorList not null");
             Vector3 targetPosition = pathVectorList[currentPathIndex];
+            //Debug.Log("target : "+ targetPosition);
             if(Vector3.Distance(transform.position, targetPosition) >1f) {
-                Debug.Log("moving");
+                //Debug.Log("moving");
                 Vector3 moveDir = (targetPosition -  transform.position).normalized;
 
                 float distanceBefore = Vector3.Distance(transform.position, targetPosition);
@@ -55,17 +56,37 @@ public class EnemyPathfindingMovementHandler : MonoBehaviour
         }
     }
 
-    public void SetTargetPosition(Vector3 targetPosition)
+    public void SetTargetPosition(Vector3 targetPosition, Pathfinding pathfinding)
     {
         currentPathIndex = 0;
-        pathVectorList = Pathfinding.Instance.FindPath(GetPosition(), targetPosition);
-        Debug.LogWarning(pathVectorList);
+        pathVectorList = pathfinding.FindPath(GetPosition(), targetPosition);
+       // Debug.LogWarning(pathVectorList.Count);
+        foreach(Vector3 pathVector in pathVectorList)
+        {
+            Debug.LogWarning(pathVector);
+        }
         if(pathVectorList != null && pathVectorList.Count > 1)
         {
             pathVectorList.RemoveAt(0);
         }
+        
     }
+   
+    public void CheckPathNodes(Vector3 targetPosition, Pathfinding pathfinding)
+    {
+        pathfinding.GetGrid().GetXY(targetPosition, out int endX, out int endY);
+        pathfinding.GetGrid().GetXY(GetPosition(), out int startX, out int startY);
 
+        pathNodes = pathfinding.FindPath(startX, startY, endX, endY);
+        for(int i=0; i<pathNodes.Count-1; i++)
+        {
+            if(GridManager.Instance.grid.gridArray[pathNodes[i].x, pathNodes[i].y].GetType() != GridType.PathGrid)
+            {
+                //Enemy is either running into a boundary, path grid or a blue grid.
+                Debug.LogWarning("Will connected with players path Grid");
+            }
+        }
+    }
     private void StopMoving()
     {
         pathVectorList = null;
@@ -73,7 +94,7 @@ public class EnemyPathfindingMovementHandler : MonoBehaviour
 
     public Vector3 GetPosition()
     {
-        Debug.Log(transform.position);
+        Debug.LogWarning("Enemypos:"+ transform.position);
         return transform.position;
     }
 

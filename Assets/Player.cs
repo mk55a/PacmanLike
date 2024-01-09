@@ -143,67 +143,7 @@ public class Player : MonoBehaviour
             }
         }
     }
-    /*private void HandlePlayerCollisions(Vector3 position)
-    {
-        objectRaycast = Physics2D.Raycast(transform.position, transform.right, 0.5f, interactionLayerMasks);
 
-        if (objectRaycast.collider != null)
-        {
-            string collidedLayerName = LayerMask.LayerToName(objectRaycast.collider.gameObject.layer); //LayerMask.LayerToName(objectRaycast.collider.gameObject.layer);
-            Interactables collidedInteractable = (Interactables)Enum.Parse(typeof(Interactables), collidedLayerName);
-            //Debug.LogWarning(collidedInteractable.ToString());  
-            switch (collidedInteractable)
-            {
-                case Interactables.PathGrid:
-                    //Debug.Log("path");
-                    int x, y;
-                    x = Mathf.FloorToInt((position - GridManager.Instance.originObject.transform.position).x / GridManager.Instance.gridCellSize);
-                    y = Mathf.FloorToInt((position - GridManager.Instance.originObject.transform.position).y / GridManager.Instance.gridCellSize);
-                    GetGridXY(position);
-                    GridManager.Instance.Connect();
-                    break;
-                
-                case Interactables.BlueGrid:
-
-                    Debug.Log("<color=blue>BLUE</color> ");
-                    GridManager.Instance.Connect();
-                  
-                    break;
-                
-                case Interactables.Grid:
-
-                    GetGridXY(position);
-
-                    break;
-
-                case Interactables.Enemy:
-                    Debug.Log("<color=red>ENEMY</color>");
-                    break;
-                
-                case Interactables.PowerUp:
-
-                    break;
-                
-                case Interactables.Boundary:
-                    Debug.Log("<color=blue>WALL</color> ");
-                    OnCollideWithBoundary(position);
-                    GridManager.Instance.Connect();
-                    break;
-
-                default:
-                    //Debug.Log("D");
-                    break;
-
-            }
-        }
-
-        else
-        {
-            Debug.Log("Object reference is null");
-        }
-
-    }*/
-    
     
 
     private void GetGridXY(Vector3 postion)

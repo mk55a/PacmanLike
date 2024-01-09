@@ -46,7 +46,7 @@ public class GridManager : MonoBehaviour
     }
     private void Update()
     {
-        if(Input.GetMouseButtonDown(0))
+        /*if(Input.GetMouseButtonDown(0))
         {
             Vector3 position = Utils.GetMouseWorldPosition();
             GridMapObject gridObject = grid.GetGridObject(position);
@@ -59,7 +59,7 @@ public class GridManager : MonoBehaviour
                 grid.InstantiatePathSprite(x, y, sprite);
                 
             }
-        }
+        }*/
     }
     public void SetGridAsPath(GridMapObject gridMapObject, Vector2 position)
     {

@@ -122,11 +122,11 @@ namespace EmptyCharacter.Utils
             return gameObject;
         }
         
-        public static GameObject CreateWorldBoundaries(string name, Sprite sprite, Vector2 position, Vector2 localScale, int sortingOrder, Color color)
+        public static GameObject CreateWorldBoundaries(string name, Sprite sprite, Vector2 position, Vector2 localScale, int sortingOrder, Color color,Boundary boundary)
         {
-            return CreateWorldBoundaries(null, name, sprite , position, localScale, sortingOrder, color);
+            return CreateWorldBoundaries(null, name, sprite , position, localScale, sortingOrder, color, boundary);
         }
-        public static GameObject CreateWorldBoundaries(Transform parent, string name, Sprite sprite, Vector2 localPosition, Vector2 localScale, int sortingOrder, Color color)
+        public static GameObject CreateWorldBoundaries(Transform parent, string name, Sprite sprite, Vector2 localPosition, Vector2 localScale, int sortingOrder, Color color,Boundary boundary)
         {
             GameObject gameObject = new GameObject("Boundary", typeof(SpriteRenderer));
             Transform transform = gameObject.transform;
@@ -134,15 +134,32 @@ namespace EmptyCharacter.Utils
             transform.localPosition = localPosition;
             transform.localScale = localScale;
             SpriteRenderer spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+            gameObject.layer = LayerMask.NameToLayer("Boundary");
             spriteRenderer.sprite = sprite;
             gameObject.tag = "Wall";
             spriteRenderer.sortingOrder = sortingOrder;
             spriteRenderer.color = color;
-            gameObject.layer = LayerMask.NameToLayer("Boundary");
+            
             gameObject.AddComponent<Rigidbody2D>();
             gameObject.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
             gameObject.AddComponent<BoxCollider2D>();
             gameObject.GetComponent<BoxCollider2D>().size = new Vector2(1.3f, 1.3f);
+
+            /*switch (boundary)
+            {
+                case Boundary.Up:
+                    gameObject.layer = LayerMask.NameToLayer("UpBoundary");
+                    break;
+                case Boundary.Down:
+                    gameObject.layer = LayerMask.NameToLayer("DownBoundary");
+                    break;
+                case Boundary.Left:
+                    gameObject.layer = LayerMask.NameToLayer("LeftBoundary");
+                    break;
+                case Boundary.Right:
+                    gameObject.layer = LayerMask.NameToLayer("RightBoundary");
+                    break;
+            }*/
             return gameObject;
         }
         public static Vector2 GetMouseWorldPosition()
@@ -165,5 +182,17 @@ namespace EmptyCharacter.Utils
             return worldPosition;
         }
     }
+}
+
+public class WorldBoundaryComponent: MonoBehaviour
+{
+    public Boundary boundaryType;
+}
+public enum Boundary
+{
+    Down,
+    Up,
+    Left,
+    Right
 }
 

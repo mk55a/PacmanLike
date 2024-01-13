@@ -18,7 +18,7 @@ public class Pathfinding
             Instance = this;
         }
         //_grid = new Grid<PathNode>(width, height,2f,Vector2.zero,(Grid<PathNode> g, int x, int y)=> new PathNode(g, x, y));
-        _grid = new Grid<PathNode>(width, height,2f,GridManager.Instance.originObject.transform.position,(Grid<PathNode> g, int x, int y)=> new PathNode(g, x, y));
+        _grid = new Grid<PathNode>(width, height,2f,GridManager.Instance.originObject.transform.position,(Grid<PathNode> g, int x, int y)=> new PathNode(g, x, y),false);
     }
     public Grid<PathNode> GetGrid()
     {

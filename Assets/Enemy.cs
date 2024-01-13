@@ -5,23 +5,39 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] private GameObject player;
+    [SerializeField]
+    private GameObject player;
     [SerializeField] private EnemyPathfindingMovementHandler movementHandler;
     [SerializeField] private LayerMask restrictionLayer;
     [SerializeField] private LayerMask pathGridLayer; 
     private Pathfinding pathfinding;
     private int targetX, targetY;
 
-    private SpriteDirection spriteDirection; 
+    private SpriteDirection spriteDirection;
 
-    
+    bool enemyEnabled = false;
+
     private void Awake()
     {
         pathfinding = new Pathfinding(GridManager.Instance.width, GridManager.Instance.height);
         //pathfinding.GetGrid().showDebug = true;
         //MoveToTarget();
         movementHandler.SetTargetPosition(GetTargetPosition(), pathfinding);
+
     }
+    public void EnableEnemy(bool enable)
+    {
+        if (enable)
+        {
+            enemyEnabled = true;
+            movementHandler.SetTargetPosition(GetTargetPosition(), pathfinding);
+        }
+        else
+        {
+            movementHandler.StopMoving();
+        }
+    }
+
     private void Update()
     {
         /*if (Input.GetMouseButtonDown(0))
@@ -39,8 +55,9 @@ public class Enemy : MonoBehaviour
 
     private Vector3 GetTargetPosition()
     {
-        Debug.LogWarning(player.gameObject.transform.position);
+        //Debug.LogWarning(GameManager.Instance.player.transform.position);
         return player.gameObject.transform.position;    
+        //return GameManager.Instance.player.transform.position;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -50,11 +67,13 @@ public class Enemy : MonoBehaviour
         if(restrictionLayer == (restrictionLayer | (1 << collision.gameObject.layer)))
         {
             Debug.Log("BLUE GRID");
+            movementHandler.StopMoving();
             movementHandler.SetTargetPosition(GetTargetPosition(), pathfinding);
         }
         if(pathGridLayer==(pathGridLayer | (1 << collision.gameObject.layer)))
         {
             Debug.LogWarning("Enemy Collided with Path grid");
+            EventManager.SetGameState(EventManager.GameState.GAMEOVER);
             //GAME OVER 
         }
         

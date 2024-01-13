@@ -52,18 +52,19 @@ public class EnemyPathfindingMovementHandler : MonoBehaviour
         }
         else
         {
-
+            Debug.LogError("Path vector list is null");
         }
     }
 
     public void SetTargetPosition(Vector3 targetPosition, Pathfinding pathfinding)
     {
+        Debug.LogWarning("Setting target Post : " + targetPosition);
         currentPathIndex = 0;
         pathVectorList = pathfinding.FindPath(GetPosition(), targetPosition);
        // Debug.LogWarning(pathVectorList.Count);
         foreach(Vector3 pathVector in pathVectorList)
         {
-            Debug.LogWarning(pathVector);
+            //Debug.LogWarning(pathVector);
         }
         if(pathVectorList != null && pathVectorList.Count > 1)
         {
@@ -87,7 +88,7 @@ public class EnemyPathfindingMovementHandler : MonoBehaviour
             }
         }
     }
-    private void StopMoving()
+    public void StopMoving()
     {
         pathVectorList = null;
     }

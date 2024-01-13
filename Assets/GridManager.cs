@@ -5,10 +5,11 @@ using TMPro;
 using EmptyCharacter.Utils;
 using System.Drawing;
 using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 
 public class GridManager : MonoBehaviour
 {
-    public static GridManager Instance { get; private set; }
+    //public static GridManager Instance { get; private set; }
     [SerializeField] public int width, height;
     [SerializeField] public float gridCellSize;
     [SerializeField] public Sprite sprite;
@@ -21,15 +22,28 @@ public class GridManager : MonoBehaviour
     public List<Coordinates> pathCoordinates;
     public List<Coordinates> allCoordinates;
     public List<Coordinates> capturedCoordinates;
+    public Coordinates boundaryStartCoordinates, boundaryEndCoordinates;
 
-
+    
     [SerializeField] private float fillDelay;
+    [SerializeField] private bool debugGrid;
+    public static GridManager Instance
+    {
+        get
+        {
+            if(instance == null)
+                instance = FindObjectOfType(typeof(GridManager)) as GridManager;
+            return instance;
+        }
+        set
+        {
+            instance = value;
+        }
+    }
+    private static GridManager instance;
     private void Awake()
     {
-        if(Instance == null)
-        {
-            Instance = this;
-        }
+        
         pathCoordinates = new List<Coordinates>();
         blueCoordinates = new List<Coordinates>();
         boundaryCoordinates = new List<Coordinates>();
@@ -38,7 +52,7 @@ public class GridManager : MonoBehaviour
     }
     private void Start()
     {
-        grid = new Grid<GridMapObject>(width, height, 2f, originObject.transform.position, (Grid<GridMapObject> g, int x, int y)=>new GridMapObject(g,x,y));
+        grid = new Grid<GridMapObject>(width, height, 2f, originObject.transform.position, (Grid<GridMapObject> g, int x, int y)=>new GridMapObject(g,x,y), debugGrid);
 
         DestroyGridForBoundaries();
         SetBoundaries();
@@ -109,11 +123,33 @@ public class GridManager : MonoBehaviour
 
         }
     }
+    public void SetGridAsExample(GridMapObject gridMapObject, int x, int y)
+    {
+        gridMapObject.SetType(GridType.Example);
+
+    }
+    public void SetAsGrid(GridMapObject gridMapObject)
+    {
+        gridMapObject.SetType(GridType.Grid);
+    }
 
     public void Connect()
     {
+
+        PathTraversal.Instance.FindVectorInts();
+
+
+        PathTraversal.Instance.Flood();
+        /*GetBoundaries();
+        Vector2 pointIn = PointInPolygon.Instance.SetPolygonVertices();
+        grid.GetXY(pointIn, out int startPointX, out int startPointY);*/
+
+
+
+
+
         //Haveto find one grid/Coordinate which lies in the enclosed area of the path.
-        int minX = int.MaxValue, minY = int.MaxValue, maxX = int.MinValue, maxY = int.MinValue;
+        /*int minX = int.MaxValue, minY = int.MaxValue, maxX = int.MinValue, maxY = int.MinValue;
         foreach (Coordinates coord in pathCoordinates)
         {
             //Debug.Log(coord.X + ";" + coord.Y);
@@ -123,14 +159,159 @@ public class GridManager : MonoBehaviour
             maxY = Mathf.Max(maxY, coord.Y);
         }
         int startPointX = (minX + maxX) / 2;
-        int startPointY = (minY + maxY) / 2;
-        //grid.InstantiateSelectedSprite(startPointX, startPointY,sprite);
-        //Debug.LogWarning(startPointX + ";;" + startPointY);
-        PathToBlue();
+        int startPointY = (minY + maxY) / 2;*/
 
-        
-        FloodFill.Instance.InitiateFlood(startPointX, startPointY);
+        //FloodFill.Instance.InitiateFlood(startPointX, startPointY);
+        //PathToBlue();
+        /*if (IsWithinArea(startPointX, startPointY))
+        {
+            FloodFill.Instance.InitiateFlood(startPointX, startPointY);
+            PathToBlue();
+        }
+        else
+        {
+            Debug.LogError("Starting point is outside the desired area : "+startPointX+";"+startPointY);
+        }*/
 
+    }
+    private void GetBoundaries()
+    {
+        Coordinates start = pathCoordinates[0];
+        Coordinates end = pathCoordinates[pathCoordinates.Count - 1];
+
+        GetStartBoundaryCoordinates(start);
+        GetEndBoundaryCoordinates(end);
+        Debug.LogWarning("Boundarystarrt : " + boundaryStartCoordinates.X + ","+ boundaryStartCoordinates.Y);
+        Debug.LogWarning("Boundaryend : " + boundaryEndCoordinates.X + "," + boundaryEndCoordinates.Y);
+    }
+    private void GetEndBoundaryCoordinates(Coordinates endBoundary)
+    {
+        Coordinates end = endBoundary;
+        if (end.X == 1 && end.Y != 1)
+        {
+            //Boundary is the left side. 
+            boundaryEndCoordinates = new Coordinates(0, end.Y);
+        }
+        if (end.X == 1 && end.Y == 1)
+        {
+            //check the next coordinate to find the path
+            GetEndBoundaryCoordinates(pathCoordinates[pathCoordinates.Count - 2]);
+        }
+        if (end.X == grid.GetWidth() - 1 && end.Y != 1)
+        {
+            //Boundary is on right side
+            boundaryEndCoordinates = new Coordinates(grid.GetWidth() - 1, end.Y);
+        }
+        if (end.X == grid.GetWidth() - 1 && end.Y == 1)
+        {
+            //Check the next coordinate to find the path 
+            GetEndBoundaryCoordinates(pathCoordinates[pathCoordinates.Count - 2]);
+        }
+
+        if (end.Y == 1 && end.X != 1)
+        {
+            boundaryEndCoordinates = new Coordinates(end.X, 0);
+            //Boundary is the bottom side. 
+        }
+        if (end.Y == grid.GetHeight() - 1 && end.X != 1)
+        {
+            //Boundary is on Up side
+            boundaryEndCoordinates = new Coordinates(end.X, grid.GetHeight() - 1);
+        }
+        if (end.Y == grid.GetHeight() - 1 && end.X == 1)
+        {
+            //Check the next coordinate to find the path 
+            GetEndBoundaryCoordinates(pathCoordinates[pathCoordinates.Count - 2]);
+        }
+        if (end.Y == grid.GetHeight() - 1 && end.X == grid.GetWidth() - 1)
+        {
+            //check the next coordinate
+            GetEndBoundaryCoordinates(pathCoordinates[pathCoordinates.Count-2]);
+        }
+
+    } 
+    private void GetStartBoundaryCoordinates(Coordinates startBoundary)
+    {
+        Coordinates start = startBoundary;
+        if (start.X == 1 && start.Y != 1)
+        {
+            //Boundary is the left side. 
+            boundaryStartCoordinates = new Coordinates(0, start.Y);
+        }
+        if (start.X == 1 && start.Y == 1)
+        {
+            //check the next coordinate to find the path
+            GetStartBoundaryCoordinates(pathCoordinates[1]);
+        }
+        if (start.X == grid.GetWidth() - 1 && start.Y != 1)
+        {
+            //Boundary is on right side
+            boundaryStartCoordinates = new Coordinates(grid.GetWidth()-1, start.Y);
+        }
+        if (start.X == grid.GetWidth() - 1 && start.Y == 1)
+        {
+            //Check the next coordinate to find the path 
+            GetStartBoundaryCoordinates(pathCoordinates[1]);
+        }
+
+        if (start.Y == 1 && start.X != 1)
+        {
+            boundaryStartCoordinates = new Coordinates(start.X, 0);
+            //Boundary is the bottom side. 
+        }
+        if (start.Y == grid.GetHeight() - 1 && start.X != 1)
+        {
+            //Boundary is on Up side
+            boundaryStartCoordinates = new Coordinates(start.X, grid.GetHeight()-1);
+        }
+        if (start.Y == grid.GetHeight() - 1 && start.X == 1)
+        {
+            //Check the next coordinate to find the path 
+            GetStartBoundaryCoordinates(pathCoordinates[1]);
+        }
+        if (start.Y == grid.GetHeight() - 1 && start.X == grid.GetWidth() - 1)
+        {
+            //check the next coordinate
+            GetStartBoundaryCoordinates(pathCoordinates[1]);
+        }
+    }
+    private bool IsWithinArea(int x, int y)
+    {
+        foreach (Coordinates coord in pathCoordinates)
+        {
+            // Assuming Coordinates is a class or struct with X and Y properties
+            if (coord.X == x && coord.Y == y)
+            {
+                // The point is within the area
+                return true;
+            }
+        }
+        return false;
+    }
+    private IEnumerator CheckMidGrid(int selectedGridX, int selectedGridY)
+    {
+        GridType selectedGridType= grid.GetGridObject(selectedGridX, selectedGridY).GetType();
+       
+        switch(selectedGridType)
+        {
+            case GridType.Grid:
+                FloodFill.Instance.InitiateFlood(selectedGridX, selectedGridY); FloodFill.Instance.InitiateFlood(selectedGridX, selectedGridY);
+                yield return null;
+                break;
+            case GridType.BlueGrid:
+                
+                break;
+            case GridType.PathGrid:
+                break;
+
+            case GridType.Boundary:
+
+                break; 
+        }
+        //Check the type of grid, because sometimes, it is already a Blue Grid maybe even path grid. So i have to find the grid with in the grid ppath and also it should be of Grid Type. 
+        //Stop looking in one direction if the type of grid is of type PATHGRID and continue looking in other directions. If every side it returns PATH GRID then, that means its already occupied area. 
+
+       
     }
 
     private void PathToBlue()
@@ -148,27 +329,27 @@ public class GridManager : MonoBehaviour
         for (int x = 0; x < width; x++)
         {
             int y = 0;
-            grid.allGridArray[x, y] = Utils.CreateWorldBoundaries(grid.gridArray[x, y].ToString(), sprite, grid.GetWorldPosition(x, y) + new Vector3(grid.GetCellSize(), grid.GetCellSize()) * 0.5f, new Vector2(1.6f, 1.6f), 10, UnityEngine.Color.white);
+            grid.allGridArray[x, y] = Utils.CreateWorldBoundaries(grid.gridArray[x, y].ToString(), sprite, grid.GetWorldPosition(x, y) + new Vector3(grid.GetCellSize(), grid.GetCellSize()) * 0.5f, new Vector2(1.6f, 1.6f), 10, UnityEngine.Color.white,Boundary.Down);
             grid.gridArray[x, y].SetType(GridType.Boundary);
         }
         for (int y = 1; y < height; y++)
         {
             int x = 0;
-            grid.allGridArray[x, y] = Utils.CreateWorldBoundaries(grid.gridArray[x, y].ToString(), sprite, grid.GetWorldPosition(x, y) + new Vector3(grid.GetCellSize(), grid.GetCellSize()) * 0.5f, new Vector2(1.6f, 1.6f), 10, UnityEngine.Color.white);
+            grid.allGridArray[x, y] = Utils.CreateWorldBoundaries(grid.gridArray[x, y].ToString(), sprite, grid.GetWorldPosition(x, y) + new Vector3(grid.GetCellSize(), grid.GetCellSize()) * 0.5f, new Vector2(1.6f, 1.6f), 10, UnityEngine.Color.white,Boundary.Left);
             grid.gridArray[x, y].SetType(GridType.Boundary);
         }
         for (int x = 0; x < width; x++)
         {
             int y = height - 1;
             //Debug.LogWarning(x + "," + y);
-            grid.allGridArray[x, y] = Utils.CreateWorldBoundaries(grid.gridArray[x, y].ToString(), sprite, grid.GetWorldPosition(x, y) + new Vector3(grid.GetCellSize(), grid.GetCellSize()) * 0.5f, new Vector2(1.6f, 1.6f), 10, UnityEngine.Color.white);
+            grid.allGridArray[x, y] = Utils.CreateWorldBoundaries(grid.gridArray[x, y].ToString(), sprite, grid.GetWorldPosition(x, y) + new Vector3(grid.GetCellSize(), grid.GetCellSize()) * 0.5f, new Vector2(1.6f, 1.6f), 10, UnityEngine.Color.white, Boundary.Up);
             grid.gridArray[x, y].SetType(GridType.Boundary);
         }
         for (int y = 1; y < height; y++)
         {
             int x = width - 1;
             //Debug.LogWarning(x+","+y);
-            grid.allGridArray[x, y] = Utils.CreateWorldBoundaries(grid.gridArray[x, y].ToString(), sprite, grid.GetWorldPosition(x, y) + new Vector3(grid.GetCellSize(), grid.GetCellSize()) * 0.5f, new Vector2(1.6f, 1.6f), 10, UnityEngine.Color.white);
+            grid.allGridArray[x, y] = Utils.CreateWorldBoundaries(grid.gridArray[x, y].ToString(), sprite, grid.GetWorldPosition(x, y) + new Vector3(grid.GetCellSize(), grid.GetCellSize()) * 0.5f, new Vector2(1.6f, 1.6f), 10, UnityEngine.Color.white,Boundary.Right);
             grid.gridArray[x, y].SetType(GridType.Boundary);
         }
     }
@@ -228,5 +409,6 @@ public enum GridType
     Grid,
     PathGrid,
     BlueGrid,
-    Boundary
+    Boundary,
+    Example
 }

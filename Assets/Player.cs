@@ -7,8 +7,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
 public class Player : MonoBehaviour
-{
-    public static Player Instance { get; private set; }
+{ 
     [SerializeField] private GameObject _player;
     [SerializeField] private Transform _spriteTransform;
     [SerializeField] private Transform originObject;
@@ -37,6 +36,23 @@ public class Player : MonoBehaviour
     public Coordinates pathStartGrid, pathEndGrid;
     private bool hasConnected = false; 
     
+
+    public static Player Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = FindObjectOfType(typeof(Player)) as Player;
+            }
+            return instance;
+        }
+        set
+        {
+            instance = value;   
+        }
+    }
+    private static Player instance;
     private void Awake()
     {
         if(Instance == null)
@@ -56,14 +72,24 @@ public class Player : MonoBehaviour
           
 
     }
-
     private void OnEnable()
     {
         _controls.Player.Enable();
     }
     private void OnDisable()
     {
-        _controls.Player.Disable();   
+        _controls.Player.Disable();
+    }
+    public void EnableControls(bool enable)
+    {
+        if (enable)
+        {
+            _controls.Player.Enable();
+        }
+        else if (!enable)
+        {
+            _controls.Player.Disable();
+        }
     }
     private void FixedUpdate()
     {
@@ -209,7 +235,10 @@ public class Player : MonoBehaviour
     {   
        // StartCoroutine(GridManager.Instance.PlayerOccupyPathGrid(previousGridX, previousGridY));    
     }
-
+    public Vector3 GetPlayerPosition()
+    {
+        return gameObject.transform.position;
+    }
     public Vector2 GetPlayerWorldPosition()
     {
         Vector2  pos = GetPlayerWorldRotation(_player, Camera.main);

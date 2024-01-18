@@ -122,6 +122,7 @@ public class PathTraversal : MonoBehaviour
     {
         if (floodFillCoordinates != null)
         {
+            SoundManager.Instance.FloodFillSound();
             StartCoroutine(FloodFill.Instance.Flood(floodFillCoordinates.X, floodFillCoordinates.Y));
         }
         else

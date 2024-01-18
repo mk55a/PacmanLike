@@ -66,6 +66,7 @@ public class GameManager : MonoBehaviour
 
         switch(currentGameState) { 
             case EventManager.GameState.BEGIN:
+                SoundManager.Instance.GameStartSound();
                 Time.timeScale = 1;
                 player = Instantiate(playerPrefab, GridManager.Instance.grid.GetWorldPosition(1,1) + new Vector3(GridManager.Instance.gridCellSize, GridManager.Instance.gridCellSize)*0.5f, Quaternion.identity); //+new Vector3(GridManager.Instance.gridCellSize,GridManager.Instance.gridCellSize)
                 for(int i = 0; i< numberOfEnemies; i++)

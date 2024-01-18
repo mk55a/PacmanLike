@@ -59,6 +59,7 @@ public class UIManager : MonoBehaviour
         playButton.onClick.AddListener(() => {
             GameManager.Instance.OnPlay();
             ShowScore();
+            SoundManager.Instance.ButtonClickSound();
         });
         playButton.onClick.AddListener(HideMainMenu);
 
@@ -66,10 +67,12 @@ public class UIManager : MonoBehaviour
 
     public void ShowMainMenu()
     {
+        SoundManager.Instance.StartBgMusic();
         mainMenuPanel.SetActive(true);
     }
     public void HideMainMenu()
     {
+        SoundManager.Instance.StopBgMusic();
         mainMenuPanel.SetActive(false);
     }
 
@@ -106,17 +109,20 @@ public class UIManager : MonoBehaviour
 
     public void ShowGameOver()
     {
+        SoundManager.Instance.GameOverSound();
         HideScore();
         playAgainButton.onClick.AddListener(() => GameManager.Instance.PlayAgain());
         playAgainButton.onClick.AddListener(() =>
         {
             HideGameOver();
             ShowScore();
+            SoundManager.Instance.ButtonClickSound();
         });
         mainMenuButton.onClick.AddListener(() =>
         {
             HideGameOver();
             ShowMainMenu();
+            SoundManager.Instance.ButtonClickSound();
 
         });
         gameOverPanel.SetActive(true);

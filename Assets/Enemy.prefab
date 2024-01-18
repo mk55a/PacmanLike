@@ -146,7 +146,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!61 &5938440346068611847
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -204,7 +204,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8889c10ef68c5b4b987ad8cb141a20e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
   movementHandler: {fileID: 774887995393995410}
   restrictionLayer:
     serializedVersion: 2
@@ -212,6 +211,7 @@ MonoBehaviour:
   pathGridLayer:
     serializedVersion: 2
     m_Bits: 512
+  currentEnemyState: 0
 --- !u!114 &774887995393995410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -224,5 +224,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75dae4bc31ab91d409bb980fa775ba1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemy: {fileID: 3708508600050143778}
+  enemy: {fileID: 1198253110940134344}
   speed: 2

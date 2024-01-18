@@ -5,47 +5,51 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject player;
+    
     [SerializeField] private EnemyPathfindingMovementHandler movementHandler;
     [SerializeField] private LayerMask restrictionLayer;
     [SerializeField] private LayerMask pathGridLayer; 
-    private Pathfinding pathfinding;
+    public Pathfinding pathfinding;
     private int targetX, targetY;
+
+    private GameObject player;
 
     private SpriteDirection spriteDirection;
 
-    bool enemyEnabled = false;
+    public EnemyState currentEnemyState; 
 
     private void Awake()
     {
         pathfinding = new Pathfinding(GridManager.Instance.width, GridManager.Instance.height);
-        //pathfinding.GetGrid().showDebug = true;
-        //MoveToTarget();
-        movementHandler.SetTargetPosition(GetTargetPosition(), pathfinding);
-
-    }
-    public void EnableEnemy(bool enable)
-    {
-        if (enable)
-        {
-            enemyEnabled = true;
-            movementHandler.SetTargetPosition(GetTargetPosition(), pathfinding);
-        }
-        else
-        {
-            movementHandler.StopMoving();
-        }
+        player = GameManager.Instance.player;
+        currentEnemyState = EnemyState.ATTARGET;
     }
 
     private void Update()
     {
-        /*if (Input.GetMouseButtonDown(0))
+        switch (currentEnemyState)
         {
-            movementHandler.SetTargetPosition(GetTargetPosition(),pathfinding);
-        }*/
+            case EnemyState.TOTARGET:
+                //Debug.LogWarning(currentEnemyState);
+                MoveToTarget();
+                break;
+            case EnemyState.ATTARGET:
 
-        MoveToTarget();
+                //Find new Target
+                //Debug.LogWarning(currentEnemyState);
+                movementHandler.StopMoving();
+                movementHandler.SetTargetPosition(GetTargetPosition(),pathfinding);
+                ChangeEnemyState(EnemyState.TOTARGET);
+                break;
+            case EnemyState.DEAD:
+                //Debug.LogWarning(currentEnemyState);
+                //Dead
+                Destroy(this.gameObject);
+                break;
+
+        }
+
+        
     }
 
     private void MoveToTarget()
@@ -56,29 +60,39 @@ public class Enemy : MonoBehaviour
     private Vector3 GetTargetPosition()
     {
         //Debug.LogWarning(GameManager.Instance.player.transform.position);
-        return player.gameObject.transform.position;    
         //return GameManager.Instance.player.transform.position;
+        return player.gameObject.transform.position;    
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.LogWarning("COLLISION");
+        //Debug.LogWarning("COLLISION");
         //first get the pathnodes. 
         if(restrictionLayer == (restrictionLayer | (1 << collision.gameObject.layer)))
         {
-            Debug.Log("BLUE GRID");
-            movementHandler.StopMoving();
+            Debug.Log("BLUE GRID : "+ gameObject.name.ToString());
             movementHandler.SetTargetPosition(GetTargetPosition(), pathfinding);
+            //ChangeEnemyState(EnemyState.ATTARGET);
+
         }
         if(pathGridLayer==(pathGridLayer | (1 << collision.gameObject.layer)))
         {
-            Debug.LogWarning("Enemy Collided with Path grid");
             EventManager.SetGameState(EventManager.GameState.GAMEOVER);
             //GAME OVER 
         }
-        
+        /*if (IsTrapped())
+        {
+            Debug.LogWarning("IsTrapped");
+            movementHandler.StopMoving();
+            ChangeEnemyState(EnemyState.DEAD);
+        }*/
     }
 
+   
+    public void ChangeEnemyState(EnemyState newEnemyState)
+    {
+        currentEnemyState = newEnemyState;
+    }
     private void UpdateEnemySprite()
     {
         switch (spriteDirection)
@@ -93,5 +107,31 @@ public class Enemy : MonoBehaviour
                 return;
         }
     }
+    private bool IsTrapped()
+    {
+        float raycastDistance = 2.0f; // Adjust as needed based on your grid spacing
+
+        // Check in four directions
+        bool up = !RaycastHitInDirection(Vector2.up, raycastDistance);
+        bool down = !RaycastHitInDirection(Vector2.down, raycastDistance);
+        bool left = !RaycastHitInDirection(Vector2.left, raycastDistance);
+        bool right = !RaycastHitInDirection(Vector2.right, raycastDistance);
+
+        // If all directions have hits, the enemy is trapped
+        return up && down && left && right;
+    }
+    private bool RaycastHitInDirection(Vector2 direction, float distance)
+    {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, distance);
+
+        // If a collider is hit, return true (there is an obstacle in that direction)
+        return hit.collider != null;
+    }
 }
 
+public enum EnemyState
+{
+    TOTARGET,
+    ATTARGET,
+    DEAD
+}

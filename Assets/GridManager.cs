@@ -140,6 +140,7 @@ public class GridManager : MonoBehaviour
 
 
         PathTraversal.Instance.Flood();
+        PathToBlue();
         /*GetBoundaries();
         Vector2 pointIn = PointInPolygon.Instance.SetPolygonVertices();
         grid.GetXY(pointIn, out int startPointX, out int startPointY);*/
@@ -320,6 +321,10 @@ public class GridManager : MonoBehaviour
         {
             Destroy(grid.allGridArray[coord.X, coord.Y]);
             grid.InstantiateBlueSprite(coord.X, coord.Y, sprite);
+            for(int i=0; i<GameManager.Instance.numberOfEnemiesAlive; i++)
+            {
+                GameManager.Instance.enemies[i].GetComponent<Enemy>().pathfinding._grid.GetGridObject(coord.X, coord.Y).isWalkable = false;
+            }
         }
         pathCoordinates.Clear();
     }

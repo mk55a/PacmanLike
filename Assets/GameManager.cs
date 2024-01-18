@@ -24,11 +24,15 @@ public class GameManager : MonoBehaviour
     
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private GameObject enemyPrefab;
-    [SerializeField] private GameObject gridManager; 
+    [SerializeField] private GameObject gridManager;
 
+    [SerializeField] public int numberOfEnemies;
+    public int numberOfEnemiesAlive; 
+
+    [SerializeField] private Transform[] enemyAnchorPoints; 
     [HideInInspector]
     public GameObject player;
-    private GameObject enemies; 
+    public List<GameObject> enemies; 
 
     private EventManager.GameState currentGameState;
     private void OnEnable()
@@ -48,8 +52,8 @@ public class GameManager : MonoBehaviour
     }
     private void Start()
     {
-
-        
+        enemies = new List<GameObject>();
+        numberOfEnemiesAlive = numberOfEnemies;
     }
     public void OnPlay()
     {
@@ -64,10 +68,16 @@ public class GameManager : MonoBehaviour
             case EventManager.GameState.BEGIN:
                 Time.timeScale = 1;
                 player = Instantiate(playerPrefab, GridManager.Instance.grid.GetWorldPosition(1,1) + new Vector3(GridManager.Instance.gridCellSize, GridManager.Instance.gridCellSize)*0.5f, Quaternion.identity); //+new Vector3(GridManager.Instance.gridCellSize,GridManager.Instance.gridCellSize)
-                //enemies = Instantiate(enemyPrefab, GridManager.Instance.grid.GetWorldPosition(20,20), Quaternion.identity);
-                //EnablePlayerInput(true);
+                for(int i = 0; i< numberOfEnemies; i++)
+                {
+                    GameObject enemy = Instantiate(enemyPrefab, enemyAnchorPoints[i].position, Quaternion.identity);
+                    enemies.Add(enemy);
+                    //enemies[i] = Instantiate(enemyPrefab, GridManager.Instance.grid.GetWorldPosition(UnityEngine.Random.Range(4, GridManager.Instance.grid.GetWidth() - 1), UnityEngine.Random.Range(5, GridManager.Instance.grid.GetHeight() - 1)), Quaternion.identity);
+                }
+                
+                EnablePlayerInput(true);
                 UIManager.Instance.Hide();
-                //EnableEnemy(true);
+                EnableEnemy();
                 break;
             case EventManager.GameState.PAUSE:
                 Time.timeScale = 0;
@@ -86,6 +96,12 @@ public class GameManager : MonoBehaviour
                 EnablePlayerInput(false);
                 UIManager.Instance.Show();
                 break;
+            case EventManager.GameState.CAPTURE:
+
+                break;
+            case EventManager.GameState.CAPTURECOMPLETE:
+                break;
+
         
         }
     }
@@ -94,8 +110,12 @@ public class GameManager : MonoBehaviour
     {
         player.GetComponent<Player>().EnableControls(enable);
     }
-    private void EnableEnemy(bool enable)
+    private void EnableEnemy()
     {
-        enemies.GetComponent<Enemy>().EnableEnemy(enable);
+        for(int i=0; i< numberOfEnemies; i++)
+        {
+            enemies[i].GetComponent<Enemy>().ChangeEnemyState(EnemyState.ATTARGET);
+        }
+        
     }
 }

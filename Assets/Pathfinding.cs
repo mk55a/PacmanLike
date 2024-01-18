@@ -5,10 +5,10 @@ using UnityEngine;
 public class Pathfinding 
 {
     private const int MOVE_STRAIGHT_COST = 10;
-    private const int MOVE_DIAGONAL_COST = 14;
+    private const int MOVE_DIAGONAL_COST = 10;
     public static Pathfinding Instance { get; private set; }
 
-    private Grid<PathNode> _grid;
+    public Grid<PathNode> _grid;
     private List<PathNode> openList; 
     private List<PathNode> closedList;
     public Pathfinding(int width, int height)
@@ -29,8 +29,9 @@ public class Pathfinding
         _grid.GetXY(startWorldPosition, out int startX, out int startY);
         _grid.GetXY(endWorldPosition, out int endX, out int endY);
 
-        List<PathNode> path = FindPath(startX, startY, endX, endY);
         Debug.Log("Path is  " + startX + "," + startY + "," + endX + "," + endY);
+        List<PathNode> path = FindPath(startX, startY, endX, endY);
+        
         if (path == null)
         {
             Debug.Log("Path is nul "+ startX+","+startY+","+endX+","+endY);
@@ -41,17 +42,19 @@ public class Pathfinding
             List<Vector3> vectorPath = new List<Vector3>();
             foreach(PathNode pathNode in path)
             {
+                Debug.Log("Path : " + pathNode.x + ", "+ pathNode.y);
                 //vectorPath.Add(new Vector3(pathNode.x, pathNode.y) * _grid.GetCellSize() + Vector3.one * _grid.GetCellSize()*0.5f);
                 vectorPath.Add(GetGrid().GetWorldPosition(pathNode.x, pathNode.y));
             }
-            Debug.Log("VectorPath: " + vectorPath.Count);
+            //Debug.Log("VectorPath: " + vectorPath.Count);
+           
             return vectorPath;
         }
     }
     public List<PathNode> FindPath(int startX, int startY, int endX, int endY)
     {
         PathNode startNode =  _grid.GetGridObject(startX, startY);
-        PathNode endNode = _grid.GetGridObject(endX, endY); 
+        PathNode endNode = _grid.GetGridObject(endX+1, endY+1); 
         if(startNode==null || endNode == null)
         {
             Debug.Log("Nodes are null");
@@ -90,6 +93,7 @@ public class Pathfinding
             foreach(PathNode neighbourNode in GetNeighbourList(currentNode))
             {
                 if (closedList.Contains(neighbourNode)) continue;
+                //Debug.LogWarning("neig: "+neighbourNode.ToString()+" , " + neighbourNode.isWalkable);
                 if (!neighbourNode.isWalkable)
                 {
                     closedList.Add(neighbourNode);
@@ -118,7 +122,7 @@ public class Pathfinding
     {
         List<PathNode> neighbourList = new List<PathNode>();
         //Left
-        if(currentNode.x-1 >= 0)
+        if(currentNode.x-1 > 0) //>=
         {
             neighbourList.Add(GetNode(currentNode.x - 1, currentNode.y));
             //LeftDown
@@ -127,7 +131,7 @@ public class Pathfinding
             if (currentNode.y + 1 < _grid.GetHeight()) neighbourList.Add(GetNode(currentNode.x - 1, currentNode.y + 1));*/
         }
         //Right
-        if (currentNode.x + 1 < _grid.GetWidth())
+        if (currentNode.x + 1 < _grid.GetWidth()-1)
         {
             neighbourList.Add(GetNode(currentNode.x+1, currentNode.y));
             // Right Down
@@ -138,12 +142,12 @@ public class Pathfinding
             if (currentNode.y + 1 < _grid.GetHeight()) neighbourList.Add(GetNode(currentNode.x + 1, currentNode.y + 1));*/
         }
         //Down
-        if (currentNode.y - 1 >= 0)
+        if (currentNode.y - 1 > 0)
         {
             neighbourList.Add(GetNode(currentNode.x, currentNode.y - 1));
         }
         //Up
-        if (currentNode.y + 1 >= 0)
+        if (currentNode.y + 1 < _grid.GetHeight()-1)
         {
             neighbourList.Add(GetNode(currentNode.x, currentNode.y + 1));
         }

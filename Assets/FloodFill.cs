@@ -7,7 +7,7 @@ public class FloodFill : MonoBehaviour
     public static FloodFill Instance { get; private set; }  
     [SerializeField] private float fillDelay = 0.2f;
     private GridManager gridManager;
-
+    public bool isFloodFilling;
     private void Awake()
     {
         if(Instance == null)
@@ -40,6 +40,7 @@ public class FloodFill : MonoBehaviour
         Debug.LogWarning(startX+",,"+ startY);
         while (stack.Count > 0)
         {
+            isFloodFilling = true;
             Vector2Int current = stack.Pop();
             int x = current.x;
             int y = current.y;
@@ -49,6 +50,15 @@ public class FloodFill : MonoBehaviour
                 if((gridManager.grid.gridArray[x, y].GetType() == GridType.Grid) || (gridManager.grid.gridArray[x, y].GetType() == GridType.BlueGrid))
                 {
                     gridManager.SetGridAsBlue(gridManager.grid.gridArray[x, y], x, y);
+                    if(GameManager.Instance.numberOfEnemiesAlive!= 0)
+                    {
+                        Debug.Log("Number of enemies Alive : " + GameManager.Instance.numberOfEnemiesAlive + "," + GameManager.Instance.numberOfEnemies);
+                        for (int i = 0; i < GameManager.Instance.numberOfEnemiesAlive; i++)
+                        {
+                            GameManager.Instance.enemies[i].GetComponent<Enemy>().pathfinding._grid.GetGridObject(x, y).isWalkable = false;
+                        }
+                    }
+                    
                     stack.Push(new Vector2Int(x + 1, y));
                     stack.Push(new Vector2Int(x - 1, y));
                     stack.Push(new Vector2Int(x, y + 1));
@@ -57,6 +67,7 @@ public class FloodFill : MonoBehaviour
             }
             yield return wait;
         }
+        isFloodFilling = false; 
     }
 
     public List<Coordinates> Flood(int startX, int startY, List<Coordinates> filledVectors)
@@ -79,7 +90,7 @@ public class FloodFill : MonoBehaviour
                 {
                     stackFull.Push(new Vector2Int(x, y));
                     //gridManager.SetGridAsExample(gridManager.grid.gridArray[x, y],x,y);
-                    Debug.Log("Is a Grid :" + x + "," + y);
+                    //Debug.Log("Is a Grid :" + x + "," + y);
                     filledVectors.Add(new Coordinates(x, y));
                     stack.Push(new Vector2Int(x + 1, y));
                     stack.Push(new Vector2Int(x - 1, y));

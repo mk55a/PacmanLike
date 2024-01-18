@@ -7,7 +7,7 @@ using Unity.VisualScripting;
 public class EnemyPathfindingMovementHandler : MonoBehaviour
 {
     [SerializeField]
-    private GameObject enemy; 
+    private Enemy enemy; 
     [SerializeField] private float speed;
     private int currentPathIndex;
     private List<Vector3> pathVectorList;
@@ -45,27 +45,32 @@ public class EnemyPathfindingMovementHandler : MonoBehaviour
             {
                 currentPathIndex++;
                 if(currentPathIndex >= pathVectorList.Count) {
-                    StopMoving();
-
+                    //StopMoving();
+                    GetComponent<Enemy>().ChangeEnemyState(EnemyState.ATTARGET);
                 }
             }
         }
         else
         {
             Debug.LogError("Path vector list is null");
+            if(!FloodFill.Instance.isFloodFilling)
+            {
+                GameManager.Instance.enemies.Remove(this.gameObject);
+                GameManager.Instance.numberOfEnemiesAlive--;
+                GetComponent<Enemy>().ChangeEnemyState(EnemyState.DEAD);
+            }
+
+            
         }
     }
 
     public void SetTargetPosition(Vector3 targetPosition, Pathfinding pathfinding)
     {
-        Debug.LogWarning("Setting target Post : " + targetPosition);
+        //Debug.LogWarning("Setting target Post : " + targetPosition);
         currentPathIndex = 0;
         pathVectorList = pathfinding.FindPath(GetPosition(), targetPosition);
        // Debug.LogWarning(pathVectorList.Count);
-        foreach(Vector3 pathVector in pathVectorList)
-        {
-            //Debug.LogWarning(pathVector);
-        }
+        
         if(pathVectorList != null && pathVectorList.Count > 1)
         {
             pathVectorList.RemoveAt(0);
@@ -95,7 +100,7 @@ public class EnemyPathfindingMovementHandler : MonoBehaviour
 
     public Vector3 GetPosition()
     {
-        Debug.LogWarning("Enemypos:"+ transform.position);
+        //Debug.LogWarning("Enemypos:"+ transform.position);
         return transform.position;
     }
 

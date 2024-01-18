@@ -123,6 +123,39 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &41467485
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 41467486}
+  m_Layer: 0
+  m_Name: EnemyAnchorPoints
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &41467486
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 41467485}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -16.021992, y: -17.162466, z: -0.07716693}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 64246948}
+  - {fileID: 739384638}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &51515047
 GameObject:
   m_ObjectHideFlags: 0
@@ -153,6 +186,37 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &64246947
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 64246948}
+  m_Layer: 0
+  m_Name: 1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &64246948
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 64246947}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.8, y: 33.1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 41467486}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &170665292
 GameObject:
@@ -207,7 +271,7 @@ MonoBehaviour:
   sprite: {fileID: 21300000, guid: 3445d1f239d74244583a0560d4deca0c, type: 3}
   originObject: {fileID: 51515047}
   fillDelay: 0.5
-  debugGrid: 0
+  debugGrid: 1
 --- !u!114 &170665295
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -221,6 +285,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fillDelay: 0
+  isFloodFilling: 0
 --- !u!114 &170665296
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -461,6 +526,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &739384637
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 739384638}
+  m_Layer: 0
+  m_Name: 1 (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &739384638
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 739384637}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 26.8, y: 33.1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 41467486}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &761242178
 GameObject:
   m_ObjectHideFlags: 0
@@ -627,7 +723,13 @@ MonoBehaviour:
   playerPrefab: {fileID: 246034140617837215, guid: 9f9dbb59003b2bf4dbb0cfef4649509a, type: 3}
   enemyPrefab: {fileID: 3708508600050143778, guid: 94b90ee0e45973d49917483303797ed7, type: 3}
   gridManager: {fileID: 170665292}
+  numberOfEnemies: 2
+  numberOfEnemiesAlive: 0
+  enemyAnchorPoints:
+  - {fileID: 64246948}
+  - {fileID: 739384638}
   player: {fileID: 0}
+  enemies: []
 --- !u!4 &857489390
 Transform:
   m_ObjectHideFlags: 0
@@ -1608,7 +1710,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8889c10ef68c5b4b987ad8cb141a20e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 450743276672806062}
   movementHandler: {fileID: 5575662614521617901}
   restrictionLayer:
     serializedVersion: 2
@@ -1616,6 +1717,7 @@ MonoBehaviour:
   pathGridLayer:
     serializedVersion: 2
     m_Bits: 512
+  currentEnemyState: 0
 --- !u!4 &6540750075695883820
 Transform:
   m_ObjectHideFlags: 0
@@ -1698,3 +1800,4 @@ SceneRoots:
   - {fileID: 939099705}
   - {fileID: 1382605045}
   - {fileID: 1315598684}
+  - {fileID: 41467486}

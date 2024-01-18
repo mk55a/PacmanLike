@@ -76,25 +76,25 @@ public class GameManager : MonoBehaviour
                 }
                 
                 EnablePlayerInput(true);
-                UIManager.Instance.Hide();
+                UIManager.Instance.HideMainMenu();
                 EnableEnemy();
                 break;
             case EventManager.GameState.PAUSE:
                 Time.timeScale = 0;
                 EnablePlayerInput(false);
-                UIManager.Instance.Show();
+                UIManager.Instance.ShowMainMenu();
                 break;
 
             case EventManager.GameState.CONTINUE:
                 Time.timeScale = 1;
                 EnablePlayerInput(true);
-                UIManager.Instance.Hide();
+                UIManager.Instance.HideMainMenu();
                 break;
 
             case EventManager.GameState.GAMEOVER:
                 Time.timeScale = 0;
                 EnablePlayerInput(false);
-                UIManager.Instance.Show();
+                UIManager.Instance.ShowGameOver();
                 break;
             case EventManager.GameState.CAPTURE:
 
@@ -106,6 +106,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void PlayAgain()
+    {
+
+    }
     private void EnablePlayerInput(bool enable)
     {
         player.GetComponent<Player>().EnableControls(enable);

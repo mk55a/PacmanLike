@@ -30,19 +30,15 @@ public class Enemy : MonoBehaviour
         switch (currentEnemyState)
         {
             case EnemyState.TOTARGET:
-                //Debug.LogWarning(currentEnemyState);
                 MoveToTarget();
                 break;
             case EnemyState.ATTARGET:
-
                 //Find new Target
-                //Debug.LogWarning(currentEnemyState);
                 movementHandler.StopMoving();
                 movementHandler.SetTargetPosition(GetTargetPosition(),pathfinding);
                 ChangeEnemyState(EnemyState.TOTARGET);
                 break;
             case EnemyState.DEAD:
-                //Debug.LogWarning(currentEnemyState);
                 //Dead
                 Destroy(this.gameObject);
                 break;
@@ -59,18 +55,15 @@ public class Enemy : MonoBehaviour
 
     private Vector3 GetTargetPosition()
     {
-        //Debug.LogWarning(GameManager.Instance.player.transform.position);
-        //return GameManager.Instance.player.transform.position;
+
         return player.gameObject.transform.position;    
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        //Debug.LogWarning("COLLISION");
         //first get the pathnodes. 
         if(restrictionLayer == (restrictionLayer | (1 << collision.gameObject.layer)))
         {
-            Debug.Log("BLUE GRID : "+ gameObject.name.ToString());
             movementHandler.SetTargetPosition(GetTargetPosition(), pathfinding);
             //ChangeEnemyState(EnemyState.ATTARGET);
 
@@ -80,12 +73,7 @@ public class Enemy : MonoBehaviour
             EventManager.SetGameState(EventManager.GameState.GAMEOVER);
             //GAME OVER 
         }
-        /*if (IsTrapped())
-        {
-            Debug.LogWarning("IsTrapped");
-            movementHandler.StopMoving();
-            ChangeEnemyState(EnemyState.DEAD);
-        }*/
+
     }
 
    

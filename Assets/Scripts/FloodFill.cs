@@ -63,8 +63,7 @@ public class FloodFill : MonoBehaviour
         Stack<Vector2Int> stack = new Stack<Vector2Int>();
         Stack<Vector2Int> stackFull = new Stack<Vector2Int>();  
         stack.Push(new Vector2Int(startX, startY));
-        //stackFull.Push(new Vector2Int(startX, startY));
-        Debug.LogWarning("Flooding "+startX + ",," + startY);
+        //Debug.LogWarning("Flooding "+startX + ",," + startY);
         while (stack.Count > 0)
         {
             Vector2Int current = stack.Pop();
@@ -76,7 +75,6 @@ public class FloodFill : MonoBehaviour
                 if ((gridManager.grid.gridArray[x, y].GetType() == GridType.Grid) && !stackFull.Contains(new Vector2Int(x,y)))
                 {
                     stackFull.Push(new Vector2Int(x, y));
-                    //gridManager.SetGridAsExample(gridManager.grid.gridArray[x, y],x,y);
                     //Debug.Log("Is a Grid :" + x + "," + y);
                     filledVectors.Add(new Coordinates(x, y));
                     stack.Push(new Vector2Int(x + 1, y));
@@ -110,12 +108,6 @@ public class FloodFill : MonoBehaviour
             }
         }
         return false; 
-        /*if (lastFloodedCoordinates.Contains(enemyCoordinates))
-        {
-            Debug.LogWarning("Enemy is at location");
-            return true;
-        }
-        else { return false; }*/
 
     }
     public void InitiateFlood(int x, int y)

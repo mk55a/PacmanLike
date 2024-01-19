@@ -14,19 +14,6 @@ public class EnemyPathfindingMovementHandler : MonoBehaviour
     private List<PathNode> pathNodes;
 
     public bool hasCheckedForEnemy = false;
-    private void Start()
-    {
-        
-    }
-
-    private void Update()
-    {
-        //HandleMovement();
-        /*if(Input.GetMouseButtonDown(0))
-        {
-            SetTargetPosition(Utils.GetMouseWorldPosition());   
-        }*/
-    }
 
     public void HandleMovement()
     {
@@ -55,15 +42,6 @@ public class EnemyPathfindingMovementHandler : MonoBehaviour
         else
         {
             Debug.LogError("Path vector list is null");
-            /*GridManager.Instance.grid.GetXY(this.gameObject.transform.position, out int x, out int y);
-            Debug.LogError(PathTraversal.Instance.CheckForEnemy(new Coordinates(x, y)));
-            if (PathTraversal.Instance.CheckForEnemy(new Coordinates(x, y)))
-            {
-                Debug.LogError("ENEMY IS IN FLOOD");
-                GameManager.Instance.enemies.Remove(this.gameObject);
-                GameManager.Instance.numberOfEnemiesAlive--;
-                GetComponent<Enemy>().ChangeEnemyState(EnemyState.DEAD);
-            }*/
             GridManager.Instance.grid.GetXY(this.gameObject.transform.position, out int x, out int y);
             if (GridManager.Instance.grid.GetGridObject(x,y).GetType()==GridType.BlueGrid)
             {
@@ -117,7 +95,6 @@ public class EnemyPathfindingMovementHandler : MonoBehaviour
 
     public Vector3 GetPosition()
     {
-        //Debug.LogWarning("Enemypos:"+ transform.position);
         return transform.position;
     }
 

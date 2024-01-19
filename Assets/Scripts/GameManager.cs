@@ -68,14 +68,13 @@ public class GameManager : MonoBehaviour
             case EventManager.GameState.BEGIN:
                 SoundManager.Instance.GameStartSound();
                 Time.timeScale = 1;
-                player = Instantiate(playerPrefab, GridManager.Instance.grid.GetWorldPosition(1,1) + new Vector3(GridManager.Instance.gridCellSize, GridManager.Instance.gridCellSize)*0.5f, Quaternion.identity); //+new Vector3(GridManager.Instance.gridCellSize,GridManager.Instance.gridCellSize)
-                for(int i = 0; i< numberOfEnemies; i++)
+                player = Instantiate(playerPrefab, GridManager.Instance.grid.GetWorldPosition(1,1) + new Vector3(GridManager.Instance.gridCellSize, GridManager.Instance.gridCellSize)*0.5f, Quaternion.identity);
+                for (int i = 0; i < numberOfEnemies; i++)
                 {
                     GameObject enemy = Instantiate(enemyPrefab, enemyAnchorPoints[i].position, Quaternion.identity);
                     enemies.Add(enemy);
-                    //enemies[i] = Instantiate(enemyPrefab, GridManager.Instance.grid.GetWorldPosition(UnityEngine.Random.Range(4, GridManager.Instance.grid.GetWidth() - 1), UnityEngine.Random.Range(5, GridManager.Instance.grid.GetHeight() - 1)), Quaternion.identity);
+
                 }
-                
                 EnablePlayerInput(true);
                 UIManager.Instance.HideMainMenu();
                 EnableEnemy();

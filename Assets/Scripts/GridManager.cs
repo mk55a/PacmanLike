@@ -58,23 +58,7 @@ public class GridManager : MonoBehaviour
         SetBoundaries();
         allCoordinates = grid.AllGrids();
     }
-    private void Update()
-    {
-        /*if(Input.GetMouseButtonDown(0))
-        {
-            Vector3 position = Utils.GetMouseWorldPosition();
-            GridMapObject gridObject = grid.GetGridObject(position);
-            if(gridObject != null)
-            {
-                //gridObject.SetType(GridType.PathGrid);
-                SetGridAsPath(gridObject,position);
-                int x,y;
-                grid.GetXY(position, out x, out y);
-                grid.InstantiatePathSprite(x, y, sprite);
-                
-            }
-        }*/
-    }
+
     public void SetGridAsPath(GridMapObject gridMapObject, Vector2 position)
     {
         gridMapObject.SetType(GridType.PathGrid);
@@ -141,180 +125,10 @@ public class GridManager : MonoBehaviour
 
         PathTraversal.Instance.Flood();
         PathToBlue();
-        /*GetBoundaries();
-        Vector2 pointIn = PointInPolygon.Instance.SetPolygonVertices();
-        grid.GetXY(pointIn, out int startPointX, out int startPointY);*/
-
-
-
-
-
-        //Haveto find one grid/Coordinate which lies in the enclosed area of the path.
-        /*int minX = int.MaxValue, minY = int.MaxValue, maxX = int.MinValue, maxY = int.MinValue;
-        foreach (Coordinates coord in pathCoordinates)
-        {
-            //Debug.Log(coord.X + ";" + coord.Y);
-            minX = Mathf.Min(minX, coord.X);
-            minY = Mathf.Min(minY, coord.Y);
-            maxX = Mathf.Max(maxX, coord.X);
-            maxY = Mathf.Max(maxY, coord.Y);
-        }
-        int startPointX = (minX + maxX) / 2;
-        int startPointY = (minY + maxY) / 2;*/
-
-        //FloodFill.Instance.InitiateFlood(startPointX, startPointY);
-        //PathToBlue();
-        /*if (IsWithinArea(startPointX, startPointY))
-        {
-            FloodFill.Instance.InitiateFlood(startPointX, startPointY);
-            PathToBlue();
-        }
-        else
-        {
-            Debug.LogError("Starting point is outside the desired area : "+startPointX+";"+startPointY);
-        }*/
+        
 
     }
-    private void GetBoundaries()
-    {
-        Coordinates start = pathCoordinates[0];
-        Coordinates end = pathCoordinates[pathCoordinates.Count - 1];
-
-        GetStartBoundaryCoordinates(start);
-        GetEndBoundaryCoordinates(end);
-        Debug.LogWarning("Boundarystarrt : " + boundaryStartCoordinates.X + ","+ boundaryStartCoordinates.Y);
-        Debug.LogWarning("Boundaryend : " + boundaryEndCoordinates.X + "," + boundaryEndCoordinates.Y);
-    }
-    private void GetEndBoundaryCoordinates(Coordinates endBoundary)
-    {
-        Coordinates end = endBoundary;
-        if (end.X == 1 && end.Y != 1)
-        {
-            //Boundary is the left side. 
-            boundaryEndCoordinates = new Coordinates(0, end.Y);
-        }
-        if (end.X == 1 && end.Y == 1)
-        {
-            //check the next coordinate to find the path
-            GetEndBoundaryCoordinates(pathCoordinates[pathCoordinates.Count - 2]);
-        }
-        if (end.X == grid.GetWidth() - 1 && end.Y != 1)
-        {
-            //Boundary is on right side
-            boundaryEndCoordinates = new Coordinates(grid.GetWidth() - 1, end.Y);
-        }
-        if (end.X == grid.GetWidth() - 1 && end.Y == 1)
-        {
-            //Check the next coordinate to find the path 
-            GetEndBoundaryCoordinates(pathCoordinates[pathCoordinates.Count - 2]);
-        }
-
-        if (end.Y == 1 && end.X != 1)
-        {
-            boundaryEndCoordinates = new Coordinates(end.X, 0);
-            //Boundary is the bottom side. 
-        }
-        if (end.Y == grid.GetHeight() - 1 && end.X != 1)
-        {
-            //Boundary is on Up side
-            boundaryEndCoordinates = new Coordinates(end.X, grid.GetHeight() - 1);
-        }
-        if (end.Y == grid.GetHeight() - 1 && end.X == 1)
-        {
-            //Check the next coordinate to find the path 
-            GetEndBoundaryCoordinates(pathCoordinates[pathCoordinates.Count - 2]);
-        }
-        if (end.Y == grid.GetHeight() - 1 && end.X == grid.GetWidth() - 1)
-        {
-            //check the next coordinate
-            GetEndBoundaryCoordinates(pathCoordinates[pathCoordinates.Count-2]);
-        }
-
-    } 
-    private void GetStartBoundaryCoordinates(Coordinates startBoundary)
-    {
-        Coordinates start = startBoundary;
-        if (start.X == 1 && start.Y != 1)
-        {
-            //Boundary is the left side. 
-            boundaryStartCoordinates = new Coordinates(0, start.Y);
-        }
-        if (start.X == 1 && start.Y == 1)
-        {
-            //check the next coordinate to find the path
-            GetStartBoundaryCoordinates(pathCoordinates[1]);
-        }
-        if (start.X == grid.GetWidth() - 1 && start.Y != 1)
-        {
-            //Boundary is on right side
-            boundaryStartCoordinates = new Coordinates(grid.GetWidth()-1, start.Y);
-        }
-        if (start.X == grid.GetWidth() - 1 && start.Y == 1)
-        {
-            //Check the next coordinate to find the path 
-            GetStartBoundaryCoordinates(pathCoordinates[1]);
-        }
-
-        if (start.Y == 1 && start.X != 1)
-        {
-            boundaryStartCoordinates = new Coordinates(start.X, 0);
-            //Boundary is the bottom side. 
-        }
-        if (start.Y == grid.GetHeight() - 1 && start.X != 1)
-        {
-            //Boundary is on Up side
-            boundaryStartCoordinates = new Coordinates(start.X, grid.GetHeight()-1);
-        }
-        if (start.Y == grid.GetHeight() - 1 && start.X == 1)
-        {
-            //Check the next coordinate to find the path 
-            GetStartBoundaryCoordinates(pathCoordinates[1]);
-        }
-        if (start.Y == grid.GetHeight() - 1 && start.X == grid.GetWidth() - 1)
-        {
-            //check the next coordinate
-            GetStartBoundaryCoordinates(pathCoordinates[1]);
-        }
-    }
-    private bool IsWithinArea(int x, int y)
-    {
-        foreach (Coordinates coord in pathCoordinates)
-        {
-            // Assuming Coordinates is a class or struct with X and Y properties
-            if (coord.X == x && coord.Y == y)
-            {
-                // The point is within the area
-                return true;
-            }
-        }
-        return false;
-    }
-    private IEnumerator CheckMidGrid(int selectedGridX, int selectedGridY)
-    {
-        GridType selectedGridType= grid.GetGridObject(selectedGridX, selectedGridY).GetType();
-       
-        switch(selectedGridType)
-        {
-            case GridType.Grid:
-                FloodFill.Instance.InitiateFlood(selectedGridX, selectedGridY); FloodFill.Instance.InitiateFlood(selectedGridX, selectedGridY);
-                yield return null;
-                break;
-            case GridType.BlueGrid:
-                
-                break;
-            case GridType.PathGrid:
-                break;
-
-            case GridType.Boundary:
-
-                break; 
-        }
-        //Check the type of grid, because sometimes, it is already a Blue Grid maybe even path grid. So i have to find the grid with in the grid ppath and also it should be of Grid Type. 
-        //Stop looking in one direction if the type of grid is of type PATHGRID and continue looking in other directions. If every side it returns PATH GRID then, that means its already occupied area. 
-
-       
-    }
-
+    
     private void PathToBlue()
     {
         foreach(Coordinates coord in pathCoordinates)
@@ -379,10 +193,6 @@ public class Coordinates
 }
 public class GridMapObject
 {
-    private const string PATHGRID = "PathGrid";
-    private const string BLUEGRID = "BlueGrid";
-    private const string GRID = "Grid";
-
     private Grid<GridMapObject> grid;
     private int x, y;
     private GridType type; 

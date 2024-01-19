@@ -144,22 +144,6 @@ namespace EmptyCharacter.Utils
             gameObject.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
             gameObject.AddComponent<BoxCollider2D>();
             gameObject.GetComponent<BoxCollider2D>().size = new Vector2(1.3f, 1.3f);
-
-            /*switch (boundary)
-            {
-                case Boundary.Up:
-                    gameObject.layer = LayerMask.NameToLayer("UpBoundary");
-                    break;
-                case Boundary.Down:
-                    gameObject.layer = LayerMask.NameToLayer("DownBoundary");
-                    break;
-                case Boundary.Left:
-                    gameObject.layer = LayerMask.NameToLayer("LeftBoundary");
-                    break;
-                case Boundary.Right:
-                    gameObject.layer = LayerMask.NameToLayer("RightBoundary");
-                    break;
-            }*/
             return gameObject;
         }
         public static Vector2 GetMouseWorldPosition()

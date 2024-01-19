@@ -17,13 +17,14 @@ public class Pathfinding
         {
             Instance = this;
         }
-        //_grid = new Grid<PathNode>(width, height,2f,Vector2.zero,(Grid<PathNode> g, int x, int y)=> new PathNode(g, x, y));
         _grid = new Grid<PathNode>(width, height,2f,GridManager.Instance.originObject.transform.position,(Grid<PathNode> g, int x, int y)=> new PathNode(g, x, y),false);
     }
+
     public Grid<PathNode> GetGrid()
     {
         return _grid;
     }
+
     public List<Vector3> FindPath(Vector3 startWorldPosition, Vector3 endWorldPosition)
     {
         _grid.GetXY(startWorldPosition, out int startX, out int startY);
@@ -34,7 +35,6 @@ public class Pathfinding
         
         if (path == null)
         {
-            //Debug.Log("Path is nul "+ startX+","+startY+","+endX+","+endY);
             return null; 
         }
         else
@@ -43,11 +43,8 @@ public class Pathfinding
             foreach(PathNode pathNode in path)
             {
                 Debug.Log("Path : " + pathNode.x + ", "+ pathNode.y);
-                //vectorPath.Add(new Vector3(pathNode.x, pathNode.y) * _grid.GetCellSize() + Vector3.one * _grid.GetCellSize()*0.5f);
                 vectorPath.Add(GetGrid().GetWorldPosition(pathNode.x, pathNode.y));
             }
-            //Debug.Log("VectorPath: " + vectorPath.Count);
-           
             return vectorPath;
         }
     }
@@ -93,13 +90,15 @@ public class Pathfinding
             foreach(PathNode neighbourNode in GetNeighbourList(currentNode))
             {
                 if (closedList.Contains(neighbourNode)) continue;
-                //Debug.LogWarning("neig: "+neighbourNode.ToString()+" , " + neighbourNode.isWalkable);
+
                 if (!neighbourNode.isWalkable)
                 {
                     closedList.Add(neighbourNode);
                     continue;
                 }
+
                 int tentativeGCost = currentNode.gCost + CalculateDistanceCost(currentNode, neighbourNode);
+
                 if(tentativeGCost< neighbourNode.gCost)
                 {
                     neighbourNode.cameFromNode = currentNode;
@@ -126,20 +125,11 @@ public class Pathfinding
         {
             neighbourList.Add(GetNode(currentNode.x - 1, currentNode.y));
             //LeftDown
-            /*if (currentNode.y - 1 >= 0) neighbourList.Add(GetNode(currentNode.x - 1, currentNode.y - 1));
-            // Left Up
-            if (currentNode.y + 1 < _grid.GetHeight()) neighbourList.Add(GetNode(currentNode.x - 1, currentNode.y + 1));*/
         }
         //Right
         if (currentNode.x + 1 < _grid.GetWidth()-1)
         {
             neighbourList.Add(GetNode(currentNode.x+1, currentNode.y));
-            // Right Down
-            /*if (currentNode.y-1 >= 0){
-                neighbourList.Add(GetNode(currentNode.x + 1, currentNode.y - 1));
-            }
-            // Right Up
-            if (currentNode.y + 1 < _grid.GetHeight()) neighbourList.Add(GetNode(currentNode.x + 1, currentNode.y + 1));*/
         }
         //Down
         if (currentNode.y - 1 > 0)

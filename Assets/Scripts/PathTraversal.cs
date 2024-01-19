@@ -20,7 +20,7 @@ public class PathTraversal : MonoBehaviour
     private static PathTraversal instance;
 
     public List<Vector3Int> pathVectors;
-    //private Dictionary<Vector3Int, (Vector3Int, Vector3Int)> leftAndRightFromCurrentHeading;
+
     private Dictionary<Vector3Int, (Vector3Int, Vector3Int)> leftAndRightFromCurrentHeading = new Dictionary<Vector3Int, (Vector3Int, Vector3Int)>
         {
             // heading key, (left, right)
@@ -84,14 +84,12 @@ public class PathTraversal : MonoBehaviour
                         lastFloodFilledCoordinates = leftFloodFilledCoordinates;
                         floodFillCoordinates = new Coordinates(leftX, leftY);
                         //Debug.LogWarning(leftX +","+ leftY);
-                        ///ConvertToGrid(rightFloodFilledCoordinates);
                     }
                     else
                     {
                         lastFloodFilledCoordinates = rightFloodFilledCoordinates;
                         floodFillCoordinates = new Coordinates(rightX, rightY);
                         //Debug.LogWarning(rightX + "," + rightY);
-                        //ConvertToGrid(leftFloodFilledCoordinates);
                     }
                     break;
                 }

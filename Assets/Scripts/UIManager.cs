@@ -64,7 +64,22 @@ public class UIManager : MonoBehaviour
         playButton.onClick.AddListener(HideMainMenu);
 
     }
-
+    private void Update()
+    {
+        scoreText.text = GameManager.Instance.Score().ToString() + "%";
+        if (EventManager.GetGameState != EventManager.GameState.MAINMENU)
+        {
+            Debug.LogError("NOT IN MAIN MENY");
+            
+        }
+    }
+    public void UpdateScore()
+    {
+        while(EventManager.GetGameState != EventManager.GameState.MAINMENU)
+        {
+            scoreText.text = GameManager.Instance.Score().ToString() + "%";
+        }
+    }
     public void ShowMainMenu()
     {
         SoundManager.Instance.StartBgMusic();

@@ -15,8 +15,8 @@ public class EventManager : MonoBehaviour
         PAUSE,
         CONTINUE,
         GAMEOVER,
-        CAPTURE,
-        CAPTURECOMPLETE
+        VICTORY,
+        MAINMENU
     }
 
     // Method to trigger the event and change the game state

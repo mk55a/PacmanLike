@@ -24,7 +24,7 @@ public class FloodFill : MonoBehaviour
         WaitForSeconds wait = new WaitForSeconds(fillDelay);
         Stack<Vector2Int> stack = new Stack<Vector2Int>();
         stack.Push(new Vector2Int(startX, startY));
-        Debug.LogWarning(startX+",,"+ startY);
+        //Debug.LogWarning(startX+",,"+ startY);
         while (stack.Count > 0)
         {
             isFloodFilling = true;
@@ -39,7 +39,7 @@ public class FloodFill : MonoBehaviour
                     gridManager.SetGridAsBlue(gridManager.grid.gridArray[x, y], x, y);
                     if(GameManager.Instance.numberOfEnemiesAlive!= 0)
                     {
-                        Debug.Log("Number of enemies Alive : " + GameManager.Instance.numberOfEnemiesAlive + "," + GameManager.Instance.numberOfEnemies);
+                        //Debug.Log("Number of enemies Alive : " + GameManager.Instance.numberOfEnemiesAlive + "," + GameManager.Instance.numberOfEnemies);
                         for (int i = 0; i < GameManager.Instance.numberOfEnemiesAlive; i++)
                         {
                             GameManager.Instance.enemies[i].GetComponent<Enemy>().pathfinding._grid.GetGridObject(x, y).isWalkable = false;

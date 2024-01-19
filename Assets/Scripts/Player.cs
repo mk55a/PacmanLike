@@ -114,6 +114,7 @@ public class Player : MonoBehaviour
         }
         UpdatePlayerSprite();
         HandlePlayerMovement();
+        //Debug.LogWarning(_movementSpeed);
         _rigidBody.velocity = _input * _movementSpeed;
         GetPlayerGrid();
     }
@@ -185,6 +186,24 @@ public class Player : MonoBehaviour
     private Vector2 GetPlayerWorldRotation(GameObject player ,Camera worldCamera) {
         Vector2 worldPosition = worldCamera.ScreenToWorldPoint(player.transform.position);
         return worldPosition;
+    }
+
+    public void UsePowerUp(float powerUpSpeed, float time)
+    {
+        StartCoroutine(UsePowerUpCoroutine(powerUpSpeed, time));
+    }
+    public IEnumerator UsePowerUpCoroutine(float powerUpSpeed, float time)
+    {
+        float startTime = Time.time;
+        float oldSpeed = _speed;
+        while (Time.time - startTime <time)
+        {
+            _speed = powerUpSpeed;
+            yield return null;
+        }
+        _speed = oldSpeed;
+
+
     }
 }
 public enum Interactables

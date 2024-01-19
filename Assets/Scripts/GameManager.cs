@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private GameObject enemyPrefab;
     [SerializeField] private GameObject gridManager;
+    [SerializeField] private GameObject PowerUpPrefab;
 
     [SerializeField] public int numberOfEnemies;
     public int numberOfEnemiesAlive; 
@@ -32,9 +33,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform[] enemyAnchorPoints; 
     [HideInInspector]
     public GameObject player;
-    public List<GameObject> enemies; 
+    public List<GameObject> enemies;
+
+
+
+
 
     private EventManager.GameState currentGameState;
+
     private void OnEnable()
     {
         EventManager.OnGameStateChange += HandleNewGameState;
@@ -48,6 +54,7 @@ public class GameManager : MonoBehaviour
         if(Instance != null) { 
             Instance=this;  
         }
+        EventManager.SetGameState(EventManager.GameState.MAINMENU);
         
     }
     private void Start()
@@ -66,6 +73,7 @@ public class GameManager : MonoBehaviour
 
         switch(currentGameState) { 
             case EventManager.GameState.BEGIN:
+
                 SoundManager.Instance.GameStartSound();
                 Time.timeScale = 1;
                 player = Instantiate(playerPrefab, GridManager.Instance.grid.GetWorldPosition(1,1) + new Vector3(GridManager.Instance.gridCellSize, GridManager.Instance.gridCellSize)*0.5f, Quaternion.identity);
@@ -96,16 +104,21 @@ public class GameManager : MonoBehaviour
                 EnablePlayerInput(false);
                 UIManager.Instance.ShowGameOver();
                 break;
-            case EventManager.GameState.CAPTURE:
+            case EventManager.GameState.MAINMENU:
 
                 break;
-            case EventManager.GameState.CAPTURECOMPLETE:
-                break;
+
 
         
         }
     }
 
+    public float Score()
+    {
+        float score = (GridManager.Instance.capturedNumberOfGrids / GridManager.Instance.totalNumberOfGrids) * 100f;
+        Debug.LogError(GridManager.Instance.capturedNumberOfGrids + ", "+ GridManager.Instance.totalNumberOfGrids + " "+ "Score :" + score);
+        return score;
+    }
     public void PlayAgain()
     {
 

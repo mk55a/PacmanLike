@@ -8,30 +8,17 @@ public class FloodFill : MonoBehaviour
     [SerializeField] private float fillDelay = 0.2f;
     private GridManager gridManager;
     public bool isFloodFilling;
+    public List<Coordinates> lastFloodedCoordinates;
     private void Awake()
     {
         if(Instance == null)
             Instance = this;
 
         gridManager = GetComponent<GridManager>();  
+        lastFloodedCoordinates = new List<Coordinates>();   
     }
 
-    /*private IEnumerator Flood(int x, int y)
-    {
-        WaitForSeconds wait = new WaitForSeconds(fillDelay);
-        if (x >= 0 && x < gridManager.width && y >= 0 && y < gridManager.height)
-        {
-            if (gridManager.grid.gridArray[x, y].GetType() == GridType.Grid|| gridManager.grid.gridArray[x,y].GetType()==GridType.BlueGrid)
-            {
-                gridManager.SetGridAsBlue(gridManager.grid.gridArray[x,y],x,y);
-                StartCoroutine(Flood(x + 1, y));
-                StartCoroutine(Flood(x - 1, y));
-                StartCoroutine(Flood(x, y + 1));
-                StartCoroutine(Flood(x, y - 1));
-            }
-        }
-        yield return wait;
-    }*/
+   
     public IEnumerator Flood(int startX, int startY)
     {
         WaitForSeconds wait = new WaitForSeconds(fillDelay);
@@ -108,7 +95,28 @@ public class FloodFill : MonoBehaviour
             }
             
         }
+        lastFloodedCoordinates = filledVectors;
         return filledVectors;
+    }
+    public bool CheckForEnemy(Coordinates enemyCoordinates)
+    {
+        Debug.LogWarning("enemy " + enemyCoordinates.X + " ," + enemyCoordinates.Y);
+        foreach(Coordinates coord in lastFloodedCoordinates)
+        {
+            Debug.LogWarning("flood " + coord.X + " ," + coord.Y);
+            if(coord == enemyCoordinates)
+            {
+                return true;
+            }
+        }
+        return false; 
+        /*if (lastFloodedCoordinates.Contains(enemyCoordinates))
+        {
+            Debug.LogWarning("Enemy is at location");
+            return true;
+        }
+        else { return false; }*/
+
     }
     public void InitiateFlood(int x, int y)
     {

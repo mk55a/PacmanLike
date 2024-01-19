@@ -63,7 +63,7 @@ namespace EmptyCharacter.Utils
             spriteRenderer.color = color;
             gameObject.layer = LayerMask.NameToLayer("BlueGrid");
             gameObject.AddComponent<BoxCollider2D>();
-            gameObject.GetComponent<BoxCollider2D>().size = new Vector2(1.3f, 1.3f);
+            gameObject.GetComponent<BoxCollider2D>().size = new Vector2(0.5f, 0.5f);//new Vector2(1.3f, 1.3f);
             return gameObject;
 
         }

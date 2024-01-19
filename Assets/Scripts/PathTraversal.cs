@@ -31,7 +31,7 @@ public class PathTraversal : MonoBehaviour
         };
     private List<Coordinates> leftFloodFilledCoordinates; 
     private List<Coordinates> rightFloodFilledCoordinates;
-
+    private List<Coordinates> lastFloodFilledCoordinates;
     public Coordinates floodFillCoordinates; 
 
     private void Start()
@@ -40,6 +40,7 @@ public class PathTraversal : MonoBehaviour
         
         leftFloodFilledCoordinates = new List<Coordinates>();   
         rightFloodFilledCoordinates= new List<Coordinates>();   
+        lastFloodFilledCoordinates = new List<Coordinates> ();
     }
 
     public void FindVectorInts()
@@ -53,23 +54,7 @@ public class PathTraversal : MonoBehaviour
         for(int i=0; i<GridManager.Instance.pathCoordinates.Count-1; i++)
         {
             Vector3Int heading = (pathVectors[i + 1] - pathVectors[i])/2;
-            /*if(heading.x>0)
-            {
-                heading = Vector3Int.right;
-            }
-            if (heading.x < 0)
-            {
-                heading = Vector3Int.left;
-            }
-            if (heading.y > 0)
-            {
-                heading = Vector3Int.up;
-            }
-            if(heading.y < 0)
-            {
-                heading = Vector3Int.down;
-            }
-            Debug.Log(heading);*/
+            
             if (leftAndRightFromCurrentHeading.ContainsKey(heading))
             {
                 //Debug.LogWarning("Contains Heading");
@@ -96,12 +81,14 @@ public class PathTraversal : MonoBehaviour
 
                     if (leftFloodFilledCoordinates.Count < rightFloodFilledCoordinates.Count)
                     {
+                        lastFloodFilledCoordinates = leftFloodFilledCoordinates;
                         floodFillCoordinates = new Coordinates(leftX, leftY);
                         //Debug.LogWarning(leftX +","+ leftY);
                         ///ConvertToGrid(rightFloodFilledCoordinates);
                     }
                     else
                     {
+                        lastFloodFilledCoordinates = rightFloodFilledCoordinates;
                         floodFillCoordinates = new Coordinates(rightX, rightY);
                         //Debug.LogWarning(rightX + "," + rightY);
                         //ConvertToGrid(leftFloodFilledCoordinates);
@@ -111,6 +98,28 @@ public class PathTraversal : MonoBehaviour
             }
            
         }
+    }
+    public bool CheckForEnemy(Coordinates enemyCoordinates)
+    {
+        bool isThere = false;
+        if (lastFloodFilledCoordinates != null)
+        {
+            Debug.LogWarning("enemy " + enemyCoordinates.X + " ," + enemyCoordinates.Y);
+            
+            for (int i = 0; i < lastFloodFilledCoordinates.Count; i++)
+            {
+                Debug.LogWarning(lastFloodFilledCoordinates[i].X + "," + lastFloodFilledCoordinates[i].Y);
+                if (lastFloodFilledCoordinates[i] == enemyCoordinates)
+                {
+                    Debug.LogError("HELLO THERE");
+                    isThere = true;
+                }
+            }
+        }
+        
+        return isThere;
+        
+
     }
     void ConvertToGrid(List<Coordinates> coords)
     {

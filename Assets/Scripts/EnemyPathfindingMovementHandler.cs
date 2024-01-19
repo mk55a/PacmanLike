@@ -13,6 +13,7 @@ public class EnemyPathfindingMovementHandler : MonoBehaviour
     private List<Vector3> pathVectorList;
     private List<PathNode> pathNodes;
 
+    public bool hasCheckedForEnemy = false;
     private void Start()
     {
         
@@ -36,10 +37,11 @@ public class EnemyPathfindingMovementHandler : MonoBehaviour
             //Debug.Log("target : "+ targetPosition);
             if(Vector3.Distance(transform.position, targetPosition) >1f) {
                 //Debug.Log("moving");
-                Vector3 moveDir = (targetPosition -  transform.position).normalized;
+                Vector3 moveDir = (targetPosition -  transform.position).normalized ;
 
                 float distanceBefore = Vector3.Distance(transform.position, targetPosition);
-                transform.position = transform.position + moveDir*speed*Time.deltaTime;
+                //Debug.LogWarning("Local Scale : " + transform.localScale + "Move Dir : "+ moveDir);
+                transform.position = transform.position  + moveDir*speed*Time.deltaTime;
             }
             else
             {
@@ -53,14 +55,29 @@ public class EnemyPathfindingMovementHandler : MonoBehaviour
         else
         {
             Debug.LogError("Path vector list is null");
-            if(!FloodFill.Instance.isFloodFilling)
+            /*GridManager.Instance.grid.GetXY(this.gameObject.transform.position, out int x, out int y);
+            Debug.LogError(PathTraversal.Instance.CheckForEnemy(new Coordinates(x, y)));
+            if (PathTraversal.Instance.CheckForEnemy(new Coordinates(x, y)))
             {
+                Debug.LogError("ENEMY IS IN FLOOD");
+                GameManager.Instance.enemies.Remove(this.gameObject);
+                GameManager.Instance.numberOfEnemiesAlive--;
+                GetComponent<Enemy>().ChangeEnemyState(EnemyState.DEAD);
+            }*/
+            GridManager.Instance.grid.GetXY(this.gameObject.transform.position, out int x, out int y);
+            if (GridManager.Instance.grid.GetGridObject(x,y).GetType()==GridType.BlueGrid)
+            {
+                Debug.LogError("ENEMY IS IN FLOOD");
                 GameManager.Instance.enemies.Remove(this.gameObject);
                 GameManager.Instance.numberOfEnemiesAlive--;
                 GetComponent<Enemy>().ChangeEnemyState(EnemyState.DEAD);
             }
+            else
+            {
+                enemy.ChangeEnemyState(EnemyState.ATTARGET);
+            }
 
-            
+
         }
     }
 

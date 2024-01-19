@@ -16,6 +16,8 @@ public class SoundManager : MonoBehaviour
     [SerializeField]
     private AudioSource musicAudioSource;
 
+
+    private AudioSource playerAudioSource; 
     public static SoundManager Instance
     {
         get
@@ -31,8 +33,27 @@ public class SoundManager : MonoBehaviour
     }
     private static SoundManager instance;
 
+    private void Update()
+    {
+        /*switch (EventManager.GetGameState)
+        {
+            case EventManager.GameState.BEGIN:
 
-    
+                playerAudioSource = FindObjectOfType<Player>().GetComponent<AudioSource>();
+                break;
+            default:
+                return; 
+        };*/
+    }
+
+    public void PlayerOcuupyGridSound()
+    {
+         /*if(playerAudioSource != null) {
+            playerAudioSource.clip = powerUpSound;
+            playerAudioSource.Play();
+        } */
+    }
+
     public void ButtonClickSound()
     {
         effectsAudioSource.clip = buttonClickSound;

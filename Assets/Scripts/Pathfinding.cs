@@ -34,7 +34,7 @@ public class Pathfinding
         
         if (path == null)
         {
-            Debug.Log("Path is nul "+ startX+","+startY+","+endX+","+endY);
+            //Debug.Log("Path is nul "+ startX+","+startY+","+endX+","+endY);
             return null; 
         }
         else

@@ -16,6 +16,12 @@ public class Player : MonoBehaviour
     
     [SerializeField] private Rigidbody2D _rigidBody;
 
+
+    [SerializeField] private AudioClip occupyGrid;
+    [SerializeField] private AudioClip powerUpEaten;
+
+    private AudioSource playerAudioSource; 
+
     private PlayerControls _controls; 
     private Vector2 _input;
     private SpriteDirection _spriteDirection;
@@ -34,8 +40,7 @@ public class Player : MonoBehaviour
     private int previousGridX, previousGridY;
     private int noOfPathGrids=0;
     public Coordinates pathStartGrid, pathEndGrid;
-    private bool hasConnected = false; 
-    
+    private bool hasConnected = false;
 
     public static Player Instance
     {
@@ -69,7 +74,7 @@ public class Player : MonoBehaviour
         }
         _movementSpeed = _speed;
         
-          
+        playerAudioSource = GetComponent<AudioSource>();    
 
     }
     private void OnEnable()
@@ -166,6 +171,8 @@ public class Player : MonoBehaviour
             if (gridObject.GetType() == GridType.Grid)
             {
                 GridManager.Instance.SetGridAsPath(gridObject, transform.position);
+                playerAudioSource.clip = occupyGrid;
+                playerAudioSource.Play();
             }
         }
     }
@@ -207,30 +214,7 @@ public class Player : MonoBehaviour
         
     }
 
-    private void OnCollideWithBoundary(Vector3 position)
-    {
-        int x, y;
-        x = Mathf.FloorToInt((position - GridManager.Instance.originObject.transform.position).x / GridManager.Instance.gridCellSize);
-        y = Mathf.FloorToInt((position - GridManager.Instance.originObject.transform.position).y / GridManager.Instance.gridCellSize);
 
-        GridManager.Instance.grid.allGridArray[x, y].layer = LayerMask.NameToLayer("PathGrid");
-        //StartCoroutine(GridManager.Instance.PlayerOccupyPathGrid(x, y));
-        Debug.Log("Boundary Collided");
-        if (GridManager.Instance.pathCoordinates.Contains(pathStartGrid))
-        {
-            pathEndGrid = new Coordinates(x, y);
-        }
-
-        if(previousGridX!=x || previousGridY != y)
-        {
-            if (GridManager.Instance.grid.allGridArray[previousGridX,previousGridY].layer == LayerMask.NameToLayer("Grid"))
-            {
-                //Debug.Log("Hittting border something happened");
-                GetGridXY(position);
-            }
-            
-        }
-    }
     private void CaptureGrid()
     {   
        // StartCoroutine(GridManager.Instance.PlayerOccupyPathGrid(previousGridX, previousGridY));    

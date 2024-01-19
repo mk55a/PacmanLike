@@ -154,6 +154,7 @@ Transform:
   m_Children:
   - {fileID: 64246948}
   - {fileID: 739384638}
+  - {fileID: 776408711}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &51515047
@@ -1385,6 +1386,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 761242178}
   m_CullTransparentMesh: 1
+--- !u!1 &776408710
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 776408711}
+  m_Layer: 0
+  m_Name: 1 (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &776408711
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 776408710}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 52.5, y: -0.6, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 41467486}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &857489388
 GameObject:
   m_ObjectHideFlags: 0
@@ -1417,11 +1449,12 @@ MonoBehaviour:
   playerPrefab: {fileID: 246034140617837215, guid: 9f9dbb59003b2bf4dbb0cfef4649509a, type: 3}
   enemyPrefab: {fileID: 3708508600050143778, guid: 94b90ee0e45973d49917483303797ed7, type: 3}
   gridManager: {fileID: 170665292}
-  numberOfEnemies: 2
+  numberOfEnemies: 3
   numberOfEnemiesAlive: 0
   enemyAnchorPoints:
   - {fileID: 64246948}
   - {fileID: 739384638}
+  - {fileID: 776408711}
   player: {fileID: 0}
   enemies: []
 --- !u!4 &857489390
@@ -3571,7 +3604,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.4064986}
   m_AnchorMax: {x: 1, y: 0.6274987}
-  m_AnchoredPosition: {x: -0.00022888184, y: 120}
+  m_AnchoredPosition: {x: -0.00022888184, y: 120.00001}
   m_SizeDelta: {x: 0.66000366, y: 1.0709991}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &224893884524794903
@@ -3922,7 +3955,7 @@ MonoBehaviour:
   _player: {fileID: 450743276672806062}
   _spriteTransform: {fileID: 8896806284146521671}
   originObject: {fileID: 51515048}
-  _speed: 5
+  _speed: 8
   _rotationSpeed: 0
   _rigidBody: {fileID: 4528484140209172789}
   restrictionLayerMask:
@@ -3997,6 +4030,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemy: {fileID: 8419211161188744541}
   speed: 2
+  hasCheckedForEnemy: 0
 --- !u!1 &5577124842549456981
 GameObject:
   m_ObjectHideFlags: 0

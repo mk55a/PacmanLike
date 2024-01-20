@@ -69,7 +69,7 @@ public class UIManager : MonoBehaviour
         scoreText.text = GameManager.Instance.Score().ToString() + "%";
         if (EventManager.GetGameState != EventManager.GameState.MAINMENU)
         {
-            Debug.LogError("NOT IN MAIN MENY");
+            //Debug.LogError("NOT IN MAIN MENY");
             
         }
     }

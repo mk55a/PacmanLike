@@ -26,6 +26,15 @@ public class EnemyPathfindingMovementHandler : MonoBehaviour
                 //Debug.Log("moving");
                 Vector3 moveDir = (targetPosition -  transform.position).normalized ;
 
+                if(moveDir.x > 0)
+                {
+                    ///Right
+                    enemy.spriteDirection = SpriteDirection.Right;
+                }
+                else
+                {
+                    enemy.spriteDirection=SpriteDirection.Left;
+                }
                 float distanceBefore = Vector3.Distance(transform.position, targetPosition);
                 //Debug.LogWarning("Local Scale : " + transform.localScale + "Move Dir : "+ moveDir);
                 transform.position = transform.position  + moveDir*speed*Time.deltaTime;

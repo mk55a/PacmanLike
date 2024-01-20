@@ -62,6 +62,7 @@ namespace EmptyCharacter.Utils
             spriteRenderer.sortingOrder = sortingOrder;
             spriteRenderer.color = color;
             gameObject.layer = LayerMask.NameToLayer("BlueGrid");
+            gameObject.tag = "Blue";
             gameObject.AddComponent<BoxCollider2D>();
             gameObject.GetComponent<BoxCollider2D>().size = new Vector2(0.5f, 0.5f);//new Vector2(1.3f, 1.3f);
             return gameObject;
@@ -83,6 +84,7 @@ namespace EmptyCharacter.Utils
             spriteRenderer.sortingOrder = sortingOrder;
             spriteRenderer.color = color;
             gameObject.layer = LayerMask.NameToLayer("PathGrid");
+            gameObject.tag = "Blue";
             gameObject.AddComponent<BoxCollider2D>();
             gameObject.GetComponent<BoxCollider2D>().size = new Vector2(1.3f, 1.3f);
             return gameObject;

@@ -56,6 +56,7 @@ MonoBehaviour:
   _rigidBody: {fileID: 4319834354776217348}
   occupyGrid: {fileID: 8300000, guid: 38e431362dbaca849b61c0b5b73a965d, type: 3}
   powerUpEaten: {fileID: 8300000, guid: 965dbd4fe02bf05418bbe4dfe36a86e2, type: 3}
+  _movementSpeed: 0
   restrictionLayerMask:
     serializedVersion: 2
     m_Bits: 8
@@ -292,7 +293,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 15
+  m_SortingOrder: 51
   m_Sprite: {fileID: 21300000, guid: bf8264fbbec18644584296056aec6db2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

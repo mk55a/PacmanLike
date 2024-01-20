@@ -14,7 +14,7 @@ public class Enemy : MonoBehaviour
 
     private GameObject player;
 
-    private SpriteDirection spriteDirection;
+    public SpriteDirection spriteDirection;
 
     public EnemyState currentEnemyState; 
 
@@ -45,7 +45,7 @@ public class Enemy : MonoBehaviour
 
         }
 
-        
+        UpdateEnemySprite();
     }
 
     private void MoveToTarget()

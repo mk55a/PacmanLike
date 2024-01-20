@@ -14,6 +14,8 @@ public class GridManager : MonoBehaviour
     [SerializeField] public float gridCellSize;
     [SerializeField] public Sprite sprite;
     [SerializeField] public GameObject originObject;
+    [SerializeField] public GameObject boundaryParent;
+    [SerializeField] public GameObject blueParent; 
     public Grid<GridMapObject> grid;
 
 
@@ -27,6 +29,12 @@ public class GridManager : MonoBehaviour
     
     [SerializeField] private float fillDelay;
     [SerializeField] private bool debugGrid;
+
+    public float capturedNumberOfGrids;
+    public float totalNumberOfGrids;
+
+    private const string boundaryTag = "Wall";
+    private const string blueTag = "Blue";
     public static GridManager Instance
     {
         get
@@ -43,12 +51,12 @@ public class GridManager : MonoBehaviour
     private static GridManager instance;
     private void Awake()
     {
-        
+
         pathCoordinates = new List<Coordinates>();
         blueCoordinates = new List<Coordinates>();
         boundaryCoordinates = new List<Coordinates>();
         allCoordinates = new List<Coordinates>();
-        capturedCoordinates = new List<Coordinates>();  
+        capturedCoordinates = new List<Coordinates>();
     }
     private void Start()
     {
@@ -57,8 +65,31 @@ public class GridManager : MonoBehaviour
         DestroyGridForBoundaries();
         SetBoundaries();
         allCoordinates = grid.AllGrids();
-    }
+        totalNumberOfGrids = grid.allGridArray.Length;
+        OrganizeBoundaries();
 
+
+    }
+    private void LateUpdate()
+    {
+        OrganizeBlueGrids();
+    }
+    void OrganizeBoundaries()
+    {
+        GameObject[] objects = GameObject.FindGameObjectsWithTag(boundaryTag);
+        foreach(GameObject obj in objects)
+        {
+            obj.transform.parent = boundaryParent.transform;
+        }
+    }
+    void OrganizeBlueGrids()
+    {
+        GameObject[] objects = GameObject.FindGameObjectsWithTag(blueTag);
+        foreach (GameObject objs in objects)
+        {
+            objs.transform.parent = blueParent.transform;
+        }
+    }
     public void SetGridAsPath(GridMapObject gridMapObject, Vector2 position)
     {
         gridMapObject.SetType(GridType.PathGrid);
@@ -66,13 +97,14 @@ public class GridManager : MonoBehaviour
         grid.GetXY(position, out x, out y);
         pathCoordinates.Add(new Coordinates(x, y));
         //Make the below line a coroutine so I can animate it.
-
+        capturedNumberOfGrids++;
         StartCoroutine(InstantiatePathSprite(x, y));
         
     }
 
     IEnumerator InstantiatePathSprite(int x, int y)
     {
+
         WaitForSeconds wait = new WaitForSeconds(fillDelay);
         yield return wait;
         grid.InstantiatePathSprite(x, y, sprite);
@@ -80,6 +112,7 @@ public class GridManager : MonoBehaviour
     }
     public void SetGridAsBlue(GridMapObject gridMapObject, int x, int y)
     {
+        capturedNumberOfGrids++;
         gridMapObject.SetType(GridType.BlueGrid);
         grid.InstantiateBlueSprite(x, y, sprite);
     }

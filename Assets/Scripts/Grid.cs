@@ -164,31 +164,7 @@ public class Grid<TGridObject>
 
 
 
-    public void SetBoundaries(Sprite sprite)
-    {
-        for (int x = 0; x < width; x++)
-        {
-            int y = 0;
-            allGridArray[x, y] = Utils.CreateWorldBoundaries(gridArray[x, y].ToString(), sprite, GetWorldPosition(x, y) + new Vector3(cellSize, cellSize) * 0.5f, new Vector2(1.6f, 1.6f), 10, Color.white,Boundary.Down);
-        }
-        for (int y = 1; y < height; y++)
-        {
-            int x = 0;
-            allGridArray[x, y] = Utils.CreateWorldBoundaries(gridArray[x, y].ToString(), sprite, GetWorldPosition(x, y) + new Vector3(cellSize, cellSize) * 0.5f, new Vector2(1.6f, 1.6f), 10, Color.white,Boundary.Left);
-        }
-        for (int x = 0; x < width; x++)
-        {
-            int y = height - 1;
-            //Debug.LogWarning(x + "," + y);
-            allGridArray[x, y] = Utils.CreateWorldBoundaries(gridArray[x, y].ToString(), sprite, GetWorldPosition(x, y) + new Vector3(cellSize, cellSize) * 0.5f, new Vector2(1.6f, 1.6f), 10, Color.white, Boundary.Up);
-        }
-        for (int y = 1; y < height; y++)
-        {
-            int x = width - 1;
-            //Debug.LogWarning(x+","+y);
-            allGridArray[x, y] = Utils.CreateWorldBoundaries(gridArray[x, y].ToString(), sprite, GetWorldPosition(x, y) + new Vector3(cellSize, cellSize) * 0.5f, new Vector2(1.6f, 1.6f), 10, Color.white,Boundary.Right);
-        }
-    }
+    
     public void InstantiatePathSprite(int x, int y, Sprite sprite)
     {
         allGridArray[x, y] = Utils.CreatePathSprite(gridArray[x, y].ToString(), sprite, GetWorldPosition(x, y) + new Vector3(cellSize, cellSize) * 0.5f, new Vector2(1.6f, 1.6f),5,Color.white);

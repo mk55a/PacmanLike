@@ -6,4 +6,5 @@ public abstract class PowerUp : ScriptableObject
 {
     public abstract void Apply(GameObject target);
     public abstract Sprite GetSprite();
+    public abstract float DestoryItself();
 }

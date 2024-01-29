@@ -6,6 +6,7 @@ using UnityEngine;
 public class SpeedBuff : PowerUp
 {
     public float amount;
+    public float lifeTime;
     public float duration;
     public Sprite sprite; 
     public override void Apply(GameObject target)
@@ -16,5 +17,10 @@ public class SpeedBuff : PowerUp
     public override Sprite GetSprite()
     {
         return sprite;
+    }
+    public override float DestoryItself()
+    {
+        
+        return lifeTime;    
     }
 }

@@ -37,7 +37,7 @@ public class SoundManager : MonoBehaviour
     {
         /*switch (EventManager.GetGameState)
         {
-            case EventManager.GameState.BEGIN:
+            case EventManager.GameState.GAME:
 
                 playerAudioSource = FindObjectOfType<Player>().GetComponent<AudioSource>();
                 break;

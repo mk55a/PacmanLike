@@ -60,19 +60,58 @@ public class GridManager : MonoBehaviour
     }
     private void Start()
     {
-        grid = new Grid<GridMapObject>(width, height, 2f, originObject.transform.position, (Grid<GridMapObject> g, int x, int y)=>new GridMapObject(g,x,y), debugGrid);
+
+        
+
+    }
+    public void InitiateGrid()
+    {
+        grid = new Grid<GridMapObject>(width, height, 2f, originObject.transform.position, (Grid<GridMapObject> g, int x, int y) => new GridMapObject(g, x, y), debugGrid);
 
         DestroyGridForBoundaries();
         SetBoundaries();
         allCoordinates = grid.AllGrids();
         totalNumberOfGrids = grid.allGridArray.Length;
         OrganizeBoundaries();
+    }
+    public void CleanGridStats()
+    {
+        ClearGridArrayObjects();
+        pathCoordinates.Clear();
+        boundaryCoordinates.Clear();
+        allCoordinates.Clear();
+        capturedCoordinates.Clear();
+        blueCoordinates.Clear();
 
+        capturedNumberOfGrids = 0;
+        totalNumberOfGrids = 0;
+        
 
+    }
+    private void ClearGridArrayObjects()
+    {
+        foreach(Transform child in boundaryParent.transform)
+        {
+            Destroy(child.gameObject);
+        }
+        foreach(Transform child in blueParent.transform)
+        {
+            Destroy(child.gameObject);
+        }
+        /*foreach(GameObject gameObject in grid.allGridArray)
+        {
+            Destroy(gameObject);
+        }*/
+        //grid.gridArray = null;
+        grid = null;
     }
     private void LateUpdate()
     {
-        OrganizeBlueGrids();
+        if(grid != null)
+        {
+            OrganizeBlueGrids();
+        }
+        
     }
     void OrganizeBoundaries()
     {

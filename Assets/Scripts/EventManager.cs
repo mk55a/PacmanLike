@@ -11,7 +11,7 @@ public class EventManager : MonoBehaviour
     // Enum to represent the game states
     public enum GameState
     {
-        BEGIN,
+        GAME,
         PAUSE,
         CONTINUE,
         GAMEOVER,

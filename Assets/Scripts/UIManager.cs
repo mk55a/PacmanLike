@@ -33,7 +33,13 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private GameObject enemyCapturedPrefab;
     [SerializeField]
-    private GameObject enemyCapturedContainer; 
+    private GameObject enemyCapturedContainer;
+
+    [SerializeField]
+    private GameObject victoryPanel;
+
+
+    
     public static UIManager Instance
     {
         get
@@ -63,13 +69,22 @@ public class UIManager : MonoBehaviour
         });
         playButton.onClick.AddListener(HideMainMenu);
 
+        SetCurrentTime();
+
+
+    }
+    public void SetCurrentTime()
+    {
+        levelTime = GameManager.Instance.levelDuration;
+        currentTime = levelTime;
     }
     private void Update()
     {
         scoreText.text = GameManager.Instance.Score().ToString() + "%";
-        if (EventManager.GetGameState != EventManager.GameState.MAINMENU)
+        if (EventManager.GetGameState != EventManager.GameState.MAINMENU && EventManager.GetGameState != EventManager.GameState.GAMEOVER && EventManager.GetGameState != EventManager.GameState.VICTORY)
         {
             //Debug.LogError("NOT IN MAIN MENY");
+            UpdateTimer();
             
         }
     }
@@ -126,12 +141,14 @@ public class UIManager : MonoBehaviour
     {
         SoundManager.Instance.GameOverSound();
         HideScore();
-        playAgainButton.onClick.AddListener(() => GameManager.Instance.PlayAgain());
+
         playAgainButton.onClick.AddListener(() =>
         {
+            SoundManager.Instance.ButtonClickSound();
+            PlayAgain();
             HideGameOver();
             ShowScore();
-            SoundManager.Instance.ButtonClickSound();
+            
         });
         mainMenuButton.onClick.AddListener(() =>
         {
@@ -147,5 +164,35 @@ public class UIManager : MonoBehaviour
         playAgainButton.onClick.RemoveAllListeners();
         mainMenuButton.onClick.RemoveAllListeners();
         gameOverPanel.SetActive(false);
+    }
+
+    public float currentTime;
+    public float levelTime; 
+    private void UpdateTimer()
+    {
+        //Debug.Log(currentTime);
+        UpdateClockDisplay();
+        if (currentTime > 0f)
+        {
+            currentTime -= Time.deltaTime;
+            
+        }
+        else
+        {
+            EventManager.SetGameState(EventManager.GameState.GAMEOVER);
+        }
+    }
+    public void UpdateClockDisplay()
+    {
+        int minutes = Mathf.FloorToInt(currentTime / 60);
+        int seconds = Mathf.FloorToInt(currentTime % 60);   
+        clockText.text = string.Format("{00:00}:{01:00}", minutes, seconds);
+    }
+
+    public void PlayAgain()
+    {
+        //Reset Grid. 
+        //Reinstantiate enemies.
+        EventManager.SetGameState(EventManager.GameState.GAME);
     }
 }

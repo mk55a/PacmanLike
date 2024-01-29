@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -28,9 +29,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject PowerUpPrefab;
 
     [SerializeField] public int numberOfEnemies;
-    public int numberOfEnemiesAlive; 
+    [SerializeField] public float levelDuration;
+    [SerializeField] public float powerUpPointer;
+
+    public int numberOfEnemiesAlive;
+    public float powerUpCountdown;
 
     [SerializeField] private Transform[] enemyAnchorPoints; 
+
+
     [HideInInspector]
     public GameObject player;
     public List<GameObject> enemies;
@@ -41,6 +48,7 @@ public class GameManager : MonoBehaviour
 
     private EventManager.GameState currentGameState;
 
+    
     private void OnEnable()
     {
         EventManager.OnGameStateChange += HandleNewGameState;
@@ -55,73 +63,130 @@ public class GameManager : MonoBehaviour
             Instance=this;  
         }
         EventManager.SetGameState(EventManager.GameState.MAINMENU);
-        
+        currentGameState = EventManager.GameState.MAINMENU ;
     }
-    private void Start()
-    {
-        enemies = new List<GameObject>();
-        numberOfEnemiesAlive = numberOfEnemies;
-    }
+    
     public void OnPlay()
     {
         gridManager.SetActive(true);
-        EventManager.SetGameState(EventManager.GameState.BEGIN);
+        EventManager.SetGameState(EventManager.GameState.GAME);
     }
     void HandleNewGameState(EventManager.GameState newState)
     {
-        currentGameState = newState;
+        Debug.LogWarning(currentGameState);
+        if(currentGameState != newState)
+        {
+            Debug.LogWarning("changed Current state");
+            currentGameState = newState;
 
-        switch(currentGameState) { 
-            case EventManager.GameState.BEGIN:
+            switch (currentGameState)
+            {
+                case EventManager.GameState.GAME:
+                    UIManager.Instance.SetCurrentTime();
+                    SoundManager.Instance.GameStartSound();
+                    Debug.LogWarning("GAME");
+                    if (GridManager.Instance.grid == null)
+                    {
+                        GridManager.Instance.InitiateGrid();
+                    }
+                    enemies = new List<GameObject>();
+                    numberOfEnemiesAlive = numberOfEnemies;
+                    player = Instantiate(playerPrefab, GridManager.Instance.grid.GetWorldPosition(1, 1) + new Vector3(GridManager.Instance.gridCellSize, GridManager.Instance.gridCellSize) * 0.5f, Quaternion.identity);
+                    for (int i = 0; i < numberOfEnemies; i++)
+                    {
+                        GameObject enemy = Instantiate(enemyPrefab, enemyAnchorPoints[i].position, Quaternion.identity);
+                        enemies.Add(enemy);
 
-                SoundManager.Instance.GameStartSound();
-                Time.timeScale = 1;
-                player = Instantiate(playerPrefab, GridManager.Instance.grid.GetWorldPosition(1,1) + new Vector3(GridManager.Instance.gridCellSize, GridManager.Instance.gridCellSize)*0.5f, Quaternion.identity);
-                for (int i = 0; i < numberOfEnemies; i++)
-                {
-                    GameObject enemy = Instantiate(enemyPrefab, enemyAnchorPoints[i].position, Quaternion.identity);
-                    enemies.Add(enemy);
+                    }
 
-                }
-                EnablePlayerInput(true);
-                UIManager.Instance.HideMainMenu();
-                EnableEnemy();
-                break;
-            case EventManager.GameState.PAUSE:
-                Time.timeScale = 0;
-                EnablePlayerInput(false);
-                UIManager.Instance.ShowMainMenu();
-                break;
+                    UIManager.Instance.HideMainMenu();
 
-            case EventManager.GameState.CONTINUE:
-                Time.timeScale = 1;
-                EnablePlayerInput(true);
-                UIManager.Instance.HideMainMenu();
-                break;
+                    Time.timeScale = 1;
+                    EnablePlayerInput(true);
+                    EnableEnemy();
+                    break;
 
-            case EventManager.GameState.GAMEOVER:
-                Time.timeScale = 0;
-                EnablePlayerInput(false);
-                UIManager.Instance.ShowGameOver();
-                break;
-            case EventManager.GameState.MAINMENU:
+                case EventManager.GameState.PAUSE:
+                    Time.timeScale = 0;
+                    EnablePlayerInput(false);
+                    UIManager.Instance.ShowMainMenu();
+                    break;
 
-                break;
+                case EventManager.GameState.CONTINUE:
+                    Time.timeScale = 1;
+                    EnablePlayerInput(true);
+                    UIManager.Instance.HideMainMenu();
+                    break;
+
+                case EventManager.GameState.GAMEOVER:
+
+                    Debug.LogWarning("GAME OVER");
+                    Time.timeScale = 0;
+
+                    UIManager.Instance.ShowGameOver();
+                    GridManager.Instance.CleanGridStats();
+                    if (player != null)
+                    {
+                        EnablePlayerInput(false);
+                        Destroy(player.gameObject);
+                        player = null;
+                    }
+                    if (enemies != null)
+                    {
+                        for (int i = 0; i < numberOfEnemiesAlive; i++)
+                        {
+                            Destroy(enemies[i].gameObject);
+                        }
+                    }
+                    break;
+                case EventManager.GameState.MAINMENU:
+                    UIManager.Instance.ShowMainMenu();
+                    break;
 
 
-        
+
+            }
         }
+        
     }
 
     public float Score()
     {
         float score = (GridManager.Instance.capturedNumberOfGrids / GridManager.Instance.totalNumberOfGrids) * 100f;
+        if (score == powerUpPointer)
+        {
+            InstantiatePowerUp();
+        }
         //Debug.LogError(GridManager.Instance.capturedNumberOfGrids + ", "+ GridManager.Instance.totalNumberOfGrids + " "+ "Score :" + score);
         return score;
     }
-    public void PlayAgain()
+    private Coordinates RandomIndex()
     {
-
+        
+       List<Coordinates> selectables = GridManager.Instance.allCoordinates.Concat(GridManager.Instance.boundaryCoordinates).Concat(GridManager.Instance.blueCoordinates).Concat(GridManager.Instance.pathCoordinates).Distinct().ToList();
+        int randomIndex;
+        if (selectables.Count > 0)
+        {
+            randomIndex = UnityEngine.Random.Range(0, selectables.Count);
+            return selectables[randomIndex];
+        }
+        else
+        {
+            return new Coordinates(0, 0);
+        }
+        
+    }
+    bool powerUpInGame = false;
+    public void InstantiatePowerUp()
+    {
+        //produce random coordinates
+        Coordinates selected = RandomIndex();
+        if(!powerUpInGame)
+        {
+            Instantiate(PowerUpPrefab, GridManager.Instance.grid.GetWorldPosition(selected.X, selected.Y), Quaternion.identity);
+            powerUpInGame = true;
+        }
+        
     }
     private void EnablePlayerInput(bool enable)
     {

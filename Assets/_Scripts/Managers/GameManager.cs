@@ -10,44 +10,42 @@ public class GameManager : MonoBehaviour
     {
         get
         {
-            if (instance == null)
-                instance = FindObjectOfType(typeof(GameManager)) as GameManager;
-            return instance;
+            if (_instance == null)
+                _instance = FindObjectOfType(typeof(GameManager)) as GameManager;
+            return _instance;
         }
         set
         {
-            instance = value;
+            _instance = value;
         }
     }
-    private static GameManager instance;
-    public static event EventHandler GameBegins; 
-    
-    [SerializeField] private GameObject playerPrefab;
-    [SerializeField] private GameObject enemyPrefab;
-    [SerializeField] private GameObject gridManager;
-    [SerializeField] private GameObject PowerUpPrefab;
+    private static GameManager _instance;
 
-    [SerializeField] public int numberOfEnemies;
-    public int numberOfEnemiesAlive; 
-
-    [SerializeField] private Transform[] enemyAnchorPoints; 
+    public int numberOfEnemiesAlive;
     [HideInInspector]
     public GameObject player;
     public List<GameObject> enemies;
 
+    public int numberOfEnemies;
+    [SerializeField] private GameObject _playerPrefab;
+    [SerializeField] private GameObject _enemyPrefab;
+    [SerializeField] private GameObject _gridManager;
+    [SerializeField] private GameObject _powerUpPrefab;
 
+    [SerializeField] private Transform[] _enemyAnchorPoints;
 
+    private EventManager.GameState _currentGameState;
 
-
-    private EventManager.GameState currentGameState;
 
     private void OnEnable()
     {
         EventManager.OnGameStateChange += HandleNewGameState;
+        LevelManager.onLevelSelected += OnPlay;
     }
     private void OnDisable()
     {
-        EventManager.OnGameStateChange -= HandleNewGameState;   
+        EventManager.OnGameStateChange -= HandleNewGameState;
+        LevelManager.onLevelSelected -= OnPlay;
     }
     private void Awake()
     {
@@ -64,22 +62,22 @@ public class GameManager : MonoBehaviour
     }
     public void OnPlay()
     {
-        gridManager.SetActive(true);
+        _gridManager.SetActive(true);
         EventManager.SetGameState(EventManager.GameState.BEGIN);
     }
     void HandleNewGameState(EventManager.GameState newState)
     {
-        currentGameState = newState;
+        _currentGameState = newState;
 
-        switch(currentGameState) { 
+        switch(_currentGameState) { 
             case EventManager.GameState.BEGIN:
 
                 SoundManager.Instance.GameStartSound();
                 Time.timeScale = 1;
-                player = Instantiate(playerPrefab, GridManager.Instance.grid.GetWorldPosition(1,1) + new Vector3(GridManager.Instance.gridCellSize, GridManager.Instance.gridCellSize)*0.5f, Quaternion.identity);
+                player = Instantiate(_playerPrefab, GridManager.Instance.grid.GetWorldPosition(1,1) + new Vector3(GridManager.Instance.gridCellSize, GridManager.Instance.gridCellSize)*0.5f, Quaternion.identity);
                 for (int i = 0; i < numberOfEnemies; i++)
                 {
-                    GameObject enemy = Instantiate(enemyPrefab, enemyAnchorPoints[i].position, Quaternion.identity);
+                    GameObject enemy = Instantiate(_enemyPrefab, _enemyAnchorPoints[i].position, Quaternion.identity);
                     enemies.Add(enemy);
 
                 }

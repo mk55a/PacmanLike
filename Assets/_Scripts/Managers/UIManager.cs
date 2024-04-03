@@ -14,6 +14,12 @@ public class UIManager : MonoBehaviour
     private GameObject mainMenuPanel;
 
     [SerializeField]
+    private GameObject levelSelectionPanel;
+    [SerializeField]
+    private Button backToMainMenuButton;
+
+
+    [SerializeField]
     private GameObject gameOverPanel;
     [SerializeField]
     private Button playAgainButton;
@@ -23,7 +29,7 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private GameObject scorePanel;
     [SerializeField]
-    private TextMeshProUGUI levelText;
+    public TextMeshProUGUI levelText;
     [SerializeField]
     private TextMeshProUGUI scoreText;
     [SerializeField]
@@ -33,7 +39,7 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private GameObject enemyCapturedPrefab;
     [SerializeField]
-    private GameObject enemyCapturedContainer; 
+    private GameObject enemyCapturedContainer;
     public static UIManager Instance
     {
         get
@@ -53,16 +59,21 @@ public class UIManager : MonoBehaviour
         ShowMainMenu();
         HideScore();
         HideGameOver();
+        HideLevelSelection();
     }
     private void Start()
     {
-        playButton.onClick.AddListener(() => {
+        /*playButton.onClick.AddListener(() => {
             GameManager.Instance.OnPlay();
             ShowScore();
             SoundManager.Instance.ButtonClickSound();
+        });*/
+        playButton.onClick.AddListener(() =>
+        {
+            SoundManager.Instance.ButtonClickSound();
+            playButton.onClick.AddListener(HideMainMenu);
+            playButton.onClick.AddListener(ShowLevelSelection);
         });
-        playButton.onClick.AddListener(HideMainMenu);
-
     }
     private void Update()
     {
@@ -70,12 +81,12 @@ public class UIManager : MonoBehaviour
         if (EventManager.GetGameState != EventManager.GameState.MAINMENU)
         {
             //Debug.LogError("NOT IN MAIN MENY");
-            
+
         }
     }
     public void UpdateScore()
     {
-        while(EventManager.GetGameState != EventManager.GameState.MAINMENU)
+        while (EventManager.GetGameState != EventManager.GameState.MAINMENU)
         {
             scoreText.text = GameManager.Instance.Score().ToString() + "%";
         }
@@ -89,6 +100,14 @@ public class UIManager : MonoBehaviour
     {
         SoundManager.Instance.StopBgMusic();
         mainMenuPanel.SetActive(false);
+    }
+    public void ShowLevelSelection()
+    {
+        levelSelectionPanel.SetActive(true);
+    }
+    public void HideLevelSelection()
+    {
+        levelSelectionPanel.SetActive(false);
     }
 
     public void ShowScore()

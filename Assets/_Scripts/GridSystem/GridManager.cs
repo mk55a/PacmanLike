@@ -10,8 +10,10 @@ using Unity.VisualScripting;
 public class GridManager : MonoBehaviour
 {
     //public static GridManager Instance { get; private set; }
-    [SerializeField] public int width, height;
-    [SerializeField] public float gridCellSize;
+    [HideInInspector]
+    public int width, height;
+    [HideInInspector]
+    public float gridCellSize;
     [SerializeField] public Sprite sprite;
     [SerializeField] public GameObject originObject;
     [SerializeField] public GameObject boundaryParent;

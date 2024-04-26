@@ -37,6 +37,10 @@ public class UIManager : MonoBehaviour
 
     [SerializeField]
     private GameObject victoryPanel;
+    [SerializeField]
+    private GameObject continueButton;
+    [SerializeField]
+    private GameObject goBackToMainMenu; 
 
 
     

@@ -4,16 +4,26 @@ using UnityEngine;
 using EmptyCharacter.Utils;
 using Unity.VisualScripting;
 
-public class EnemyPathfindingMovementHandler : MonoBehaviour
+public class EnemyMovement : MonoBehaviour
 {
-    [SerializeField]
+    
     private Enemy enemy; 
+
     [SerializeField] private float speed;
+
     private int currentPathIndex;
+
     private List<Vector3> pathVectorList;
+
     private List<PathNode> pathNodes;
 
     public bool hasCheckedForEnemy = false;
+
+    private void Awake()
+    {
+        enemy = GetComponent<Enemy>();
+    }
+
 
     public void HandleMovement()
     {
@@ -108,4 +118,12 @@ public class EnemyPathfindingMovementHandler : MonoBehaviour
     }
 
     
+}
+
+public enum EnemyAI
+{
+    IDLE,
+    CHASE,
+    TARGET,
+    DEATH
 }

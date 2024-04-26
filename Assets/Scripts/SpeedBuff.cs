@@ -12,7 +12,7 @@ public class SpeedBuff : PowerUp
     public override void Apply(GameObject target)
     {
         //target.GetComponent<Player>()._movementSpeed += amount; 
-        target.GetComponent<Player>().UsePowerUp(amount, duration);
+        target.GetComponent<Player>().UsePowerUp(PowerUpType.SpeedBuff, amount, duration);
     }
     public override Sprite GetSprite()
     {

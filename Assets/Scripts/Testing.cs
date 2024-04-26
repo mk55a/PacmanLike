@@ -14,7 +14,7 @@ public class Testing : MonoBehaviour
     [SerializeField]
     private GameObject enemyOne;
 
-    [SerializeField] private EnemyPathfindingMovementHandler characterPathfinding;
+    [SerializeField] private EnemyMovement characterPathfinding;
     private void Start()
     {
         pathfinding = new Pathfinding(25, 25);

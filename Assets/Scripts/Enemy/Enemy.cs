@@ -6,10 +6,14 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     
-    [SerializeField] private EnemyPathfindingMovementHandler movementHandler;
+    private EnemyMovement movementHandler;
+
     [SerializeField] private LayerMask restrictionLayer;
+
     [SerializeField] private LayerMask pathGridLayer; 
+
     public Pathfinding pathfinding;
+
     private int targetX, targetY;
 
     private GameObject player;
@@ -20,6 +24,7 @@ public class Enemy : MonoBehaviour
 
     private void Awake()
     {
+        movementHandler = GetComponent<EnemyMovement>();
         pathfinding = new Pathfinding(GridManager.Instance.width, GridManager.Instance.height);
         player = GameManager.Instance.player;
         currentEnemyState = EnemyState.ATTARGET;

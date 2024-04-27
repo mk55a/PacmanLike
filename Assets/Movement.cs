@@ -33,7 +33,7 @@ public class Movement : MonoBehaviour
         
         _rigidBody = GetComponent<Rigidbody2D>();
 
-        if( _rigidBody != null)
+        if( _rigidBody == null)
         {
             Debug.LogError("No rigidbody");
         }
@@ -55,7 +55,6 @@ public class Movement : MonoBehaviour
     private void FixedUpdate()
     {
         _input = Player.Instance.GetMovementInput();
-        Debug.LogWarning(_input);
 
         _rigidBody.velocity = _input * _movementSpeed;
     }

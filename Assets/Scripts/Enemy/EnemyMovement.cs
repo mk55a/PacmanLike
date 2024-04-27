@@ -9,7 +9,7 @@ public class EnemyMovement : MonoBehaviour
     
     private Enemy enemy; 
 
-    [SerializeField] private float speed;
+    [SerializeField] private float speed; // Later get it from the level manager.
 
     private int currentPathIndex;
 
@@ -19,24 +19,33 @@ public class EnemyMovement : MonoBehaviour
 
     public bool hasCheckedForEnemy = false;
 
+    private Vector3 moveDir;
+    private LineRenderer lineRenderer;
     private void Awake()
     {
         enemy = GetComponent<Enemy>();
+        lineRenderer = GetComponent<LineRenderer>();    
     }
 
+    private void UpdateLineRenderer(Vector3 startPoint, Vector3 endPoint)
+    {
+        // Set LineRenderer positions
+        lineRenderer.SetPosition(0, startPoint);
+        lineRenderer.SetPosition(1, endPoint);
+    }
 
     public void HandleMovement()
     {
         if(pathVectorList!= null)
         {
-            //Debug.Log("pathVectorList not null");
+            Debug.Log("pathVectorList not null");
             Vector3 targetPosition = pathVectorList[currentPathIndex];
-            //Debug.Log("target : "+ targetPosition);
+            Debug.Log("target : "+ targetPosition + " current:"+ transform.position);
             if(Vector3.Distance(transform.position, targetPosition) >1f) {
                 //Debug.Log("moving");
-                Vector3 moveDir = (targetPosition -  transform.position).normalized ;
-
-                if(moveDir.x > 0)
+                moveDir = (targetPosition -  transform.position).normalized ;
+                UpdateLineRenderer(transform.position, transform.position + moveDir * 5f);
+                if (moveDir.x > 0)
                 {
                     ///Right
                     enemy.spriteDirection = SpriteDirection.Right;
@@ -53,8 +62,9 @@ public class EnemyMovement : MonoBehaviour
             {
                 currentPathIndex++;
                 if(currentPathIndex >= pathVectorList.Count) {
+                    Debug.Log("Enemy Stopped moving");
                     //StopMoving();
-                    GetComponent<Enemy>().ChangeEnemyState(EnemyState.ATTARGET);
+                    /*GetComponent<Enemy>().ChangeEnemyState(EnemyState.ATTARGET);*/
                 }
             }
         }
@@ -67,14 +77,47 @@ public class EnemyMovement : MonoBehaviour
                 Debug.LogError("ENEMY IS IN FLOOD");
                 GameManager.Instance.enemies.Remove(this.gameObject);
                 GameManager.Instance.numberOfEnemiesAlive--;
-                GetComponent<Enemy>().ChangeEnemyState(EnemyState.DEAD);
+                /*GetComponent<Enemy>().ChangeEnemyState(EnemyState.DEAD);*/
             }
             else
             {
-                enemy.ChangeEnemyState(EnemyState.ATTARGET);
+                /*enemy.ChangeEnemyState(EnemyState.ATTARGET);*/
             }
 
 
+        }
+    }
+    private void Update()
+    {
+        HandleMovement();
+    }
+
+    public void HandleIdleMovement(Pathfinding pathfinding)
+    {
+        //Make the enemy traverse through random empty grids. 
+        Vector3 randomPos = GetRandomPositionOnGrid();
+
+        SetTargetPosition(randomPos, pathfinding);
+        //HandleMovement();
+
+    }
+
+    private Vector3 GetRandomPositionOnGrid()
+    {
+        int gridWidth = GridManager.Instance.grid.GetWidth();
+        int gridHeight = GridManager.Instance.grid.GetHeight();
+
+        while (true)
+        {
+            int randomX = Random.Range(0, gridWidth);
+            int randomY = Random.Range(0, gridHeight);
+
+            PathNode randomNode = Pathfinding.Instance.GetNode(randomX, randomY);
+
+            if(randomNode != null  && randomNode.isWalkable)
+            {
+                return Pathfinding.Instance.GetGrid().GetWorldPosition(randomX, randomY);
+            }
         }
     }
 
@@ -117,13 +160,17 @@ public class EnemyMovement : MonoBehaviour
         return transform.position;
     }
 
-    
+    public void ChaseTarget(Transform player, Pathfinding pathfinding)
+    {
+        Debug.Log("Setting up a chase target");
+        currentPathIndex = 0;
+        pathVectorList = pathfinding.FindPath(GetPosition(), player.position);
+
+        if (pathVectorList != null && pathVectorList.Count > 1)
+        {
+            pathVectorList.RemoveAt(0);
+        }
+    }
 }
 
-public enum EnemyAI
-{
-    IDLE,
-    CHASE,
-    TARGET,
-    DEATH
-}
+

@@ -73,12 +73,12 @@ public class GameManager : MonoBehaviour
     }
     void HandleNewGameState(EventManager.GameState newState)
     {
-        Debug.LogWarning(currentGameState);
+        
         if(currentGameState != newState)
         {
             Debug.LogWarning("changed Current state");
             currentGameState = newState;
-
+            Debug.LogWarning(currentGameState);
             switch (currentGameState)
             {
                 case EventManager.GameState.GAME:
@@ -123,8 +123,8 @@ public class GameManager : MonoBehaviour
                     Debug.LogWarning("GAME OVER");
                     Time.timeScale = 0;
 
-                    UIManager.Instance.ShowGameOver();
-                    GridManager.Instance.CleanGridStats();
+                    //UIManager.Instance.ShowGameOver();
+                    //GridManager.Instance.CleanGridStats();
                     if (player != null)
                     {
                         EnablePlayerInput(false);
@@ -196,7 +196,7 @@ public class GameManager : MonoBehaviour
     {
         for(int i=0; i< numberOfEnemies; i++)
         {
-            enemies[i].GetComponent<Enemy>().ChangeEnemyState(EnemyState.ATTARGET);
+            /*enemies[i].GetComponent<Enemy>().ChangeEnemyState(EnemyState.ATTARGET);*/
         }
         
     }

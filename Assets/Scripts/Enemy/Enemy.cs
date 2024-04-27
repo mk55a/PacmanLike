@@ -5,52 +5,128 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    
-    private EnemyMovement movementHandler;
+
+    public EnemyMovement movementHandler;
+    public Pathfinding pathfinding;
+    public GameObject player;
+
+    [SerializeField] public EnemyConfigScriptable enemyConfig;
+
+    public EnemyAiStateMachine stateMachine;
+    public AiStateId initialState;
+    public AiStateId currentState;
 
     [SerializeField] private LayerMask restrictionLayer;
-
-    [SerializeField] private LayerMask pathGridLayer; 
-
-    public Pathfinding pathfinding;
+    [SerializeField] private LayerMask pathGridLayer;
+    [SerializeField] public CircleCollider2D circleCollider2D;
 
     private int targetX, targetY;
 
-    private GameObject player;
-
     public SpriteDirection spriteDirection;
-
-    public EnemyState currentEnemyState; 
 
     private void Awake()
     {
         movementHandler = GetComponent<EnemyMovement>();
         pathfinding = new Pathfinding(GridManager.Instance.width, GridManager.Instance.height);
         player = GameManager.Instance.player;
-        currentEnemyState = EnemyState.ATTARGET;
+
+    }
+    private void Start()
+    {
+        stateMachine = new EnemyAiStateMachine(this);
+        stateMachine.RegisterState(new IdleEnemyState());
+        stateMachine.RegisterState(new ChaseEnemyState());
+        stateMachine.ChangeState(initialState);
     }
 
     private void Update()
     {
-        switch (currentEnemyState)
-        {
-            case EnemyState.TOTARGET:
-                MoveToTarget();
-                break;
-            case EnemyState.ATTARGET:
-                //Find new Target
-                movementHandler.StopMoving();
-                movementHandler.SetTargetPosition(GetTargetPosition(),pathfinding);
-                ChangeEnemyState(EnemyState.TOTARGET);
-                break;
-            case EnemyState.DEAD:
-                //Dead
-                Destroy(this.gameObject);
-                break;
+        currentState = stateMachine.currentState;
+        
+        stateMachine.Update();
+    }
 
-        }
+
+
+
+
+
+
+
+    //public EnemyState currentEnemyState;
+    //public AiStateId currentEnemyState;
+
+    /*private IAiState currentState;
+
+    public IdleEnemyState idleState;
+    public TargetState targetState;
+    public ChaseEnemyState chaseState;
+    public DeathEnemyState deathState; 
+    public CapturedEnemyState capturedState;
+
+    private void Awake()
+    {
+        movementHandler = GetComponent<EnemyMovement>();
+
+        pathfinding = new Pathfinding(GridManager.Instance.width, GridManager.Instance.height);
+
+        player = GameManager.Instance.player;
+
+        //currentEnemyState = EnemyState.ATTARGET;
+        currentEnemyState = AiStateId.IDLE;
+
+        idleState = new IdleEnemyState();
+        targetState = new TargetState();
+        chaseState = new ChaseEnemyState();
+        deathState = new DeathEnemyState();
+        capturedState = new CapturedEnemyState();
+
+        currentState = idleState;
+        currentState.EnterState();
+    }
+
+    private void Update()
+    {
+        UpdateEnemyState();
 
         UpdateEnemySprite();
+    }
+    */
+
+    
+
+    void UpdateEnemyState()
+    {
+        /*switch (currentEnemyState)
+        {
+
+            case AiStateId.IDLE: //The state where enemies are just bouncing around
+                //Do RandomMovment
+                break;
+
+            case AiStateId.TARGET: //The state where the enemies will go to the target, doesn't depend on on the distance as long as it is in bounds. 
+                
+                movementHandler.StopMoving();
+                movementHandler.SetTargetPosition(GetTargetPosition(), pathfinding); //Since this is in update loop, it is basically chasing the player as update loop. 
+
+                MoveToTarget();
+
+                break;
+
+            case AiStateId.CHASE: //The state they switch to from IDLE when they they detect the enemy in range through a circular collider.
+                
+                break;
+
+            case AiStateId.DEATH:
+                //Dead
+                Destroy(this.gameObject);
+
+                break;
+
+        }*/
+
+
+       
     }
 
     private void MoveToTarget()
@@ -58,7 +134,7 @@ public class Enemy : MonoBehaviour
         movementHandler.HandleMovement();
     }
 
-    private Vector3 GetTargetPosition()
+    public Vector3 GetTargetPosition()
     {
 
         return player.gameObject.transform.position;    
@@ -81,11 +157,17 @@ public class Enemy : MonoBehaviour
 
     }
 
-   
-    public void ChangeEnemyState(EnemyState newEnemyState)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        currentEnemyState = newEnemyState;
+        
+        if (collision.CompareTag("Player"))
+        {
+            Debug.Log("Player in Range");
+            stateMachine.ChangeState(AiStateId.CHASE);
+        }
     }
+
+
     private void UpdateEnemySprite()
     {
         switch (spriteDirection)
@@ -100,6 +182,7 @@ public class Enemy : MonoBehaviour
                 return;
         }
     }
+
     private bool IsTrapped()
     {
         float raycastDistance = 2.0f; // Adjust as needed based on your grid spacing
@@ -113,6 +196,7 @@ public class Enemy : MonoBehaviour
         // If all directions have hits, the enemy is trapped
         return up && down && left && right;
     }
+
     private bool RaycastHitInDirection(Vector2 direction, float distance)
     {
         RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, distance);
@@ -120,6 +204,7 @@ public class Enemy : MonoBehaviour
         // If a collider is hit, return true (there is an obstacle in that direction)
         return hit.collider != null;
     }
+
 }
 
 public enum EnemyState

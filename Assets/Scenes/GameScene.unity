@@ -610,7 +610,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.034, y: 0.07878172}
   m_AnchorMax: {x: 0.97518384, y: 0.17580098}
-  m_AnchoredPosition: {x: -0.8159523, y: 0.5}
+  m_AnchoredPosition: {x: -0.8159561, y: 0.5}
   m_SizeDelta: {x: 0.38899994, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &391705260
@@ -1858,10 +1858,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 246034140617837215, guid: adfe64d0136ee484e8428405cd5962a8, type: 3}
-  enemyPrefab: {fileID: 3708508600050143778, guid: 94b90ee0e45973d49917483303797ed7, type: 3}
+  enemyPrefab: {fileID: 3708508600050143778, guid: 8a4bd380cd933bc4390ca96c8b8d8f28, type: 3}
   gridManager: {fileID: 170665292}
   PowerUpPrefab: {fileID: 3910953041819901923, guid: d73bfa847eb039e4d83246f1a38c7cbf, type: 3}
-  numberOfEnemies: 3
+  numberOfEnemies: 1
   levelDuration: 50
   powerUpPointer: 1
   numberOfEnemiesAlive: 0
@@ -4498,7 +4498,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.4064986}
   m_AnchorMax: {x: 1, y: 0.6274987}
-  m_AnchoredPosition: {x: -0.00022888184, y: 120.000015}
+  m_AnchoredPosition: {x: -0.00022888184, y: 120}
   m_SizeDelta: {x: 0.66000366, y: 1.0709991}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &224893884524794903
@@ -4935,7 +4935,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75dae4bc31ab91d409bb980fa775ba1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemy: {fileID: 8419211161188744541}
   speed: 2
   hasCheckedForEnemy: 0
 --- !u!1 &5577124842549456981
@@ -4967,15 +4966,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8889c10ef68c5b4b987ad8cb141a20e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementHandler: {fileID: 5575662614521617901}
+  movementHandler: {fileID: 0}
+  player: {fileID: 0}
+  enemyConfig: {fileID: 0}
+  initialState: 0
+  currentState: 0
   restrictionLayer:
     serializedVersion: 2
     m_Bits: 72
   pathGridLayer:
     serializedVersion: 2
     m_Bits: 512
+  circleCollider2D: {fileID: 0}
   spriteDirection: 0
-  currentEnemyState: 0
 --- !u!4 &6540750075695883820
 Transform:
   m_ObjectHideFlags: 0

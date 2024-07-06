@@ -14,6 +14,7 @@ public class PowerUpObject : MonoBehaviour
 
     private void OnEnable()
     {
+        Debug.LogError("POWER UP IN GAME");
         spriteRenderer.sprite = powerUp.GetSprite();
         lifeTime = powerUp.DestoryItself();
     }

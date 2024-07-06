@@ -36,6 +36,7 @@ public class Enemy : MonoBehaviour
         stateMachine = new EnemyAiStateMachine(this);
         stateMachine.RegisterState(new IdleEnemyState());
         stateMachine.RegisterState(new ChaseEnemyState());
+        stateMachine.RegisterState(new DeathEnemyState());
         stateMachine.ChangeState(initialState);
     }
 
@@ -167,7 +168,11 @@ public class Enemy : MonoBehaviour
         }
     }
 
-
+    public void OnDeath()
+    {
+        Debug.LogError("Enemy died");
+        Destroy(this.gameObject);
+    }
     private void UpdateEnemySprite()
     {
         switch (spriteDirection)

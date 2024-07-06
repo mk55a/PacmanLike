@@ -30,8 +30,17 @@ public class EnemyMovement : MonoBehaviour
     private void UpdateLineRenderer(Vector3 startPoint, Vector3 endPoint)
     {
         // Set LineRenderer positions
+        lineRenderer.positionCount = 2;
         lineRenderer.SetPosition(0, startPoint);
         lineRenderer.SetPosition(1, endPoint);
+    }
+    private void UpdateLineRenderer()
+    {
+        lineRenderer.positionCount = pathVectorList.Count;
+        for (int i = 0; i < pathVectorList.Count; i++)
+        {
+            lineRenderer.SetPosition(i, pathVectorList[i]);
+        }
     }
 
     public void HandleMovement()
@@ -44,7 +53,8 @@ public class EnemyMovement : MonoBehaviour
             if(Vector3.Distance(transform.position, targetPosition) >1f) {
                 //Debug.Log("moving");
                 moveDir = (targetPosition -  transform.position).normalized ;
-                UpdateLineRenderer(transform.position, transform.position + moveDir * 5f);
+                /*UpdateLineRenderer(transform.position, transform.position + moveDir * 5f);*/
+                UpdateLineRenderer();
                 if (moveDir.x > 0)
                 {
                     ///Right
@@ -57,11 +67,15 @@ public class EnemyMovement : MonoBehaviour
                 float distanceBefore = Vector3.Distance(transform.position, targetPosition);
                 //Debug.LogWarning("Local Scale : " + transform.localScale + "Move Dir : "+ moveDir);
                 transform.position = transform.position  + moveDir*speed*Time.deltaTime;
+
+                
             }
             else
             {
                 currentPathIndex++;
                 if(currentPathIndex >= pathVectorList.Count) {
+                    pathVectorList = null;
+                    lineRenderer.positionCount = 0;
                     Debug.Log("Enemy Stopped moving");
                     //StopMoving();
                     /*GetComponent<Enemy>().ChangeEnemyState(EnemyState.ATTARGET);*/
@@ -74,13 +88,17 @@ public class EnemyMovement : MonoBehaviour
             GridManager.Instance.grid.GetXY(this.gameObject.transform.position, out int x, out int y);
             if (GridManager.Instance.grid.GetGridObject(x,y).GetType()==GridType.BlueGrid)
             {
-                Debug.LogError("ENEMY IS IN FLOOD");
                 GameManager.Instance.enemies.Remove(this.gameObject);
+                enemy.stateMachine.ChangeState(AiStateId.DEATH);
+                Debug.LogError("ENEMY IS IN FLOOD");
+                
                 GameManager.Instance.numberOfEnemiesAlive--;
+                
                 /*GetComponent<Enemy>().ChangeEnemyState(EnemyState.DEAD);*/
             }
             else
             {
+                enemy.stateMachine.ChangeState(AiStateId.IDLE);
                 /*enemy.ChangeEnemyState(EnemyState.ATTARGET);*/
             }
 
@@ -132,7 +150,7 @@ public class EnemyMovement : MonoBehaviour
         {
             pathVectorList.RemoveAt(0);
         }
-        
+        UpdateLineRenderer();
     }
    
     public void CheckPathNodes(Vector3 targetPosition, Pathfinding pathfinding)
